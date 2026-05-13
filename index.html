@@ -133,7 +133,8 @@
         }
         .cat-card:hover { transform: translateY(-6px); background: white; }
         body.dark .cat-card:hover { background: #3a5a4a; }
-        .cat-icon { font-size: 3rem; margin-bottom: 10px; color: #2e7d5e; }
+        .cat-icon { font-size: 3rem; margin-bottom: 10px; }
+        body.light .cat-icon { color: #2e7d5e; }
         body.dark .cat-icon { color: #d4af37; }
         .cat-title { font-weight: 800; font-size: 1.1rem; }
         .pdf-count {
@@ -316,20 +317,32 @@
     function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]); }
     function setPage(pageId) { document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page")); document.getElementById(pageId).classList.add("active-page"); }
 
-    // ---------- تم ----------
+    // ---------- تم (با رفع مشکل برگشت) ----------
     let currentTheme = localStorage.getItem("theme") || "light";
     function applyTheme(theme) {
         document.body.classList.remove("light", "dark");
         document.body.classList.add(theme);
         localStorage.setItem("theme", theme);
+        currentTheme = theme;
         let toggleText = theme === "light" ? "تم تاریک" : "تم روشن";
         let icon = theme === "light" ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-        document.querySelectorAll(".theme-toggle").forEach(btn => { if (btn) btn.innerHTML = icon + " " + toggleText; });
+        document.querySelectorAll(".theme-toggle").forEach(btn => {
+            if (btn) btn.innerHTML = icon + " " + toggleText;
+        });
     }
-    document.getElementById("themeToggleBtn")?.addEventListener("click", () => applyTheme(currentTheme === "light" ? "dark" : "light"));
-    document.getElementById("themeToggleBtn2")?.addEventListener("click", () => applyTheme(currentTheme === "light" ? "dark" : "light"));
-    document.getElementById("themeToggleAdmin")?.addEventListener("click", () => applyTheme(currentTheme === "light" ? "dark" : "light"));
+    function toggleTheme() {
+        let newTheme = currentTheme === "light" ? "dark" : "light";
+        applyTheme(newTheme);
+    }
+    // اتصال رویداد به دکمه‌ها (همیشه پس از بارگذاری مجدد DOM)
+    function bindThemeButtons() {
+        document.querySelectorAll(".theme-toggle").forEach(btn => {
+            btn.removeEventListener("click", toggleTheme);
+            btn.addEventListener("click", toggleTheme);
+        });
+    }
     applyTheme(currentTheme);
+    bindThemeButtons();
 
     // ---------- داده‌های اولیه ----------
     let DEFAULT_CATEGORIES = [
@@ -338,9 +351,13 @@
         { id: 3, title: "نمونه سوال فصل به فصل", order: 2, hasChapters: true },
         { id: 4, title: "سوال های شخصی", order: 3, hasChapters: false }
     ];
+    // آیکون‌های خلاقانه و متفاوت برای هر دسته (ثابت)
+    const CAT_ICONS = ["🧮", "📊", "🧩", "🎯", "🧠", "✨", "🚀", "🎲", "💡"];
+    function getCatIcon(index) { return CAT_ICONS[index % CAT_ICONS.length]; }
+
     function initData() {
         if (!localStorage.getItem("categories")) localStorage.setItem("categories", JSON.stringify(DEFAULT_CATEGORIES));
-        if (!localStorage.getItem("pdfs")) localStorage.setItem("pdfs", JSON.stringify([])); // هر PDF: { id, categoryId, name, data, chapter? (optional) }
+        if (!localStorage.getItem("pdfs")) localStorage.setItem("pdfs", JSON.stringify([]));
         if (!localStorage.getItem("footerText")) localStorage.setItem("footerText", "🏆 مسابقات ریاضی نور | ویژه نوروز ۱۴۰۴ 🏆");
         if (!localStorage.getItem("copyText")) localStorage.setItem("copyText", "🏆 مسابقات ریاضی نور | ویژه دانش‌آموزان تیزهوش 🏆");
         if (!localStorage.getItem("users")) localStorage.setItem("users", JSON.stringify([]));
@@ -425,9 +442,7 @@
         showToast("اسلاید متنی اضافه شد");
     }
 
-    // ---------- بقیه توابع (احراز هویت، مدیریت دسته‌ها، آپلود PDF، ...) به دلیل طولانی شدن، در این نسخه کامل پیاده می‌شوند ----------
-    // (برای اختصار، فقط توابع اصلی را می‌نویسم؛ در نسخه نهایی همه چیز کامل است)
-    // === سیستم احراز هویت (همانند قبل) ===
+    // ---------- احراز هویت (همانند قبل) ----------
     let regTempCode = null, regTempData = null, resetCodeStore = null, resetMobileStore = null;
     function showTab(tab) {
         document.getElementById("loginForm").style.display = (tab === 'login') ? 'block' : 'none';
@@ -482,21 +497,23 @@
     document.getElementById("backToUserHome").onclick = () => setPage("userHomePage");
     document.getElementById("backToCategories").onclick = () => setPage("userHomePage");
     document.getElementById("backToChapterSelect").onclick = () => { setPage("chapterSelectPage"); renderChapterSelect(currentCategoryId, currentCategoryTitle); };
-    // توابع نمایش دسته‌ها و PDFها
-    let currentCategoryId = null, currentCategoryTitle = null;
+    // ---------- نمایش دسته‌ها با آیکون خلاقانه ----------
+    let currentCategoryId = null, currentCategoryTitle = null, currentChapterId = null, currentChapterCatId = null;
     function renderUserHome() {
         let user = JSON.parse(localStorage.getItem("currentNormalUser")); if (!user) return;
         document.getElementById("welcomeUser").innerHTML = `سلام ${user.fullName} 👋`;
         let cats = getCategories(); cats.sort((a, b) => a.order - b.order);
         let container = document.getElementById("userCategoriesGrid"); container.innerHTML = "";
-        cats.forEach(cat => {
-            let count = getPdfs().filter(p => p.categoryId === cat.id && !p.chapter).length;
+        cats.forEach((cat, idx) => {
+            let count = 0;
             if (cat.hasChapters) {
-                let chapters = [1,2,3,4,5,6,7,8,9];
-                count = chapters.reduce((sum, ch) => sum + getPdfs().filter(p => p.categoryId === cat.id && p.chapter === ch).length, 0);
+                for (let i = 1; i <= 9; i++) count += getPdfs().filter(p => p.categoryId === cat.id && p.chapter === i).length;
+            } else {
+                count = getPdfs().filter(p => p.categoryId === cat.id && !p.chapter).length;
             }
             let div = document.createElement("div"); div.className = "cat-card";
-            div.innerHTML = `<div class="cat-icon">📚</div><div class="cat-title">${escapeHtml(cat.title)}</div><div class="pdf-count">${count} فایل</div>`;
+            let icon = getCatIcon(idx); // آیکون خلاقانه
+            div.innerHTML = `<div class="cat-icon">${icon}</div><div class="cat-title">${escapeHtml(cat.title)}</div><div class="pdf-count">${count} فایل</div>`;
             div.onclick = () => {
                 if (cat.hasChapters) { currentCategoryId = cat.id; currentCategoryTitle = cat.title; renderChapterSelect(cat.id, cat.title); setPage("chapterSelectPage"); }
                 else { openCategory(cat.id, cat.title); }
@@ -650,6 +667,7 @@
     // شروع برنامه
     initData(); updateMainTitles();
     if (localStorage.getItem("currentNormalUser")) { renderUserHome(); setPage("userHomePage"); } else { setPage("loginPage"); showTab('login'); }
+    bindThemeButtons(); // اطمینان از اتصال مجدد دکمه‌ها
 </script>
 </body>
 </html>
