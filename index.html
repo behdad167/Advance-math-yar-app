@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ریاضی‌یار | حرفه‌ای با تم و اسلایدر تصویری</title>
+    <title>ریاضی‌یار | حرفه‌ای با تم، اسلایدر و آزمون آنلاین</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -263,6 +263,18 @@
         .tab-btn.active { background: #2e7d5e; color: white; }
         body.dark .tab-btn.active { background: #d4af37; color: #1e3a2f; }
         .error-msg { color: #c0392b; font-size: 0.8rem; margin-top: 5px; }
+        /* استایل‌های آزمون آنلاین */
+        .exam-question-card { background: #fffdf5; border-radius: 32px; padding: 20px; margin-bottom: 20px; border-right: 6px solid #d4af37; }
+        body.dark .exam-question-card { background: #2f4038; }
+        .exam-option { display: flex; align-items: center; gap: 12px; margin: 12px 0; flex-wrap: wrap; }
+        .exam-option input[type="radio"] { width: 20px; margin: 0; }
+        .exam-timer { font-size: 1.5rem; text-align: center; background: #2e7d5e; color: white; padding: 8px; border-radius: 60px; margin-bottom: 20px; }
+        .exam-nav { display: flex; justify-content: space-between; margin-top: 20px; }
+        .exam-counter { text-align: center; margin-top: 15px; font-weight: bold; color: #2e7d5e; }
+        .warning { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #e67e22; color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 1000; }
+        .student-list { max-height: 400px; overflow-y: auto; }
+        .student-item { background: #fef7e9; border-radius: 28px; padding: 10px 15px; margin: 8px 0; display: flex; justify-content: space-between; }
+        .image-preview { max-width: 100px; max-height: 60px; margin: 5px 0; border-radius: 12px; }
     </style>
 </head>
 <body class="light">
@@ -284,7 +296,7 @@
         <h2 id="welcomeUser">خوش آمدید</h2>
         <div id="userCategoriesGrid" class="categories-grid"></div>
         <div id="userFooterNote" class="footer-note"></div>
-        <div class="flex-row" style="justify-content: center; margin-top: 15px;"><button id="logoutBtn" class="btn-danger">🚪 خروج</button></div>
+        <div class="flex-row" style="justify-content: center; margin-top: 15px;"><button id="onlineExamBtn" style="background:#d4af37; color:#1e3a2f;">📝 آزمون آنلاین</button><button id="logoutBtn" class="btn-danger">🚪 خروج</button></div>
     </div>
 
     <!-- صفحه نمایش PDFهای یک دسته (غیر از فصل به فصل) -->
@@ -300,7 +312,7 @@
     <div id="adminPage" class="page">
         <div class="top-bar"><h2>👑 پنل مدیریت</h2><button class="theme-toggle" id="themeToggleAdmin"><i class="fas fa-moon"></i> تم</button></div>
         <button id="backHomeAdmin" class="btn-secondary">🔙 خروج از مدیریت</button>
-        <div class="admin-section"><h3>📢 مدیریت اسلایدر</h3><div id="slidesList"></div><div class="flex-row"><input type="file" id="slideImageInput" accept="image/*"><input type="text" id="slideTextAlt" placeholder="متن جایگزین (اختیاری)"><button id="addImageSlideBtn">➕ افزودن اسلاید تصویری</button><button id="addTextSlideBtn">➕ افزودن اسلاید متنی</button></div><small>برای عکس، یک فایل تصویری انتخاب کنید. اسلایدهای متنی نیز قابل افزودن هستند.</small></div>
+        <div class="admin-section"><h3>📢 مدیریت اسلایدر</h3><div id="slidesList"></div><div class="flex-row"><input type="file" id="slideImageInput" accept="image/*"><input type="text" id="slideTextAlt" placeholder="متن جایگزین (اختیاری)"><button id="addImageSlideBtn">➕ افزودن اسلاید تصویری</button><button id="addTextSlideBtn">➕ افزودن اسلاید متنی</button></div></div>
         <div class="admin-section"><h3>📂 مدیریت دسته‌ها</h3><div id="catsManage"></div><div class="flex-row"><input type="text" id="newCatName" placeholder="نام دسته جدید"><button id="addCatBtn">➕ افزودن</button></div></div>
         <div class="admin-section"><h3>📤 آپلود PDF</h3><select id="adminCatSelect"></select><div id="chapterSelectForAdmin" style="display:none;"><label>فصل:</label><select id="adminChapterSelect"></select></div><input type="text" id="pdfNameInput" placeholder="نام فایل"><input type="file" id="pdfFileInput" accept="application/pdf"><button id="uploadPdfAdminBtn">ذخیره PDF</button></div>
         <div class="admin-section"><h3>🗑 حذف PDF</h3><select id="adminCatDelete"></select><div id="chapterSelectForDelete" style="display:none;"><label>فصل:</label><select id="adminChapterDelete"></select></div><div id="adminPdfList"></div></div>
@@ -310,7 +322,6 @@
 </div>
 <div class="lock-icon" id="adminLockBtn">👑</div>
 <div id="toastMsg" class="toast"></div>
-
 <script>
     // ---------- توابع کمکی ----------
     function showToast(msg) { let t = document.getElementById("toastMsg"); t.innerText = msg; t.style.display = "block"; setTimeout(() => t.style.display = "none", 2000); }
@@ -326,23 +337,11 @@
         currentTheme = theme;
         let toggleText = theme === "light" ? "تم تاریک" : "تم روشن";
         let icon = theme === "light" ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-        document.querySelectorAll(".theme-toggle").forEach(btn => {
-            if (btn) btn.innerHTML = icon + " " + toggleText;
-        });
+        document.querySelectorAll(".theme-toggle").forEach(btn => { if (btn) btn.innerHTML = icon + " " + toggleText; });
     }
-    function toggleTheme() {
-        let newTheme = currentTheme === "light" ? "dark" : "light";
-        applyTheme(newTheme);
-    }
-    // اتصال رویداد به دکمه‌ها (همیشه پس از بارگذاری مجدد DOM)
-    function bindThemeButtons() {
-        document.querySelectorAll(".theme-toggle").forEach(btn => {
-            btn.removeEventListener("click", toggleTheme);
-            btn.addEventListener("click", toggleTheme);
-        });
-    }
-    applyTheme(currentTheme);
-    bindThemeButtons();
+    function toggleTheme() { applyTheme(currentTheme === "light" ? "dark" : "light"); }
+    function bindThemeButtons() { document.querySelectorAll(".theme-toggle").forEach(btn => { btn.removeEventListener("click", toggleTheme); btn.addEventListener("click", toggleTheme); }); }
+    applyTheme(currentTheme); bindThemeButtons();
 
     // ---------- داده‌های اولیه ----------
     let DEFAULT_CATEGORIES = [
@@ -351,7 +350,6 @@
         { id: 3, title: "نمونه سوال فصل به فصل", order: 2, hasChapters: true },
         { id: 4, title: "سوال های شخصی", order: 3, hasChapters: false }
     ];
-    // آیکون‌های خلاقانه و متفاوت برای هر دسته (ثابت)
     const CAT_ICONS = ["🧮", "📊", "🧩", "🎯", "🧠", "✨", "🚀", "🎲", "💡"];
     function getCatIcon(index) { return CAT_ICONS[index % CAT_ICONS.length]; }
 
@@ -363,6 +361,7 @@
         if (!localStorage.getItem("users")) localStorage.setItem("users", JSON.stringify([]));
         if (!localStorage.getItem("slides")) localStorage.setItem("slides", JSON.stringify([{ type: "text", content: "📢 جشنواره بزرگ ریاضی | تخفیف ۵۰٪" }, { type: "text", content: "🎯 مسابقه حل سوال | جوایز نقدی" }]));
         if (!localStorage.getItem("appTitle")) localStorage.setItem("appTitle", "📐 ریاضی‌یار");
+        if (!localStorage.getItem("onlineExams")) localStorage.setItem("onlineExams", JSON.stringify([]));
     }
     function getCategories() { return JSON.parse(localStorage.getItem("categories")); }
     function saveCategories(cats) { localStorage.setItem("categories", JSON.stringify(cats)); }
@@ -375,74 +374,27 @@
     function getAppTitle() { return localStorage.getItem("appTitle") || "📐 ریاضی‌یار"; }
     function setAppTitle(title) { localStorage.setItem("appTitle", title); updateMainTitles(); }
     function updateMainTitles() { let t = getAppTitle(); document.getElementById("dynamicAppTitle").innerHTML = t; document.getElementById("userDynamicTitle").innerHTML = t; }
+    function getOnlineExams() { return JSON.parse(localStorage.getItem("onlineExams") || "[]"); }
+    function saveOnlineExams(exams) { localStorage.setItem("onlineExams", JSON.stringify(exams)); }
 
     // ---------- اسلایدر تصویری ----------
     let swiperInstance = null;
     function renderSlider() {
-        let slides = getSlides();
-        let wrapper = document.getElementById("sliderWrapper");
-        if (!wrapper) return;
-        wrapper.innerHTML = "";
-        slides.forEach(s => {
-            let div = document.createElement("div"); div.className = "swiper-slide";
-            if (s.type === "image") div.innerHTML = `<img src="${s.content}" alt="تبلیغ">`;
-            else div.innerHTML = `<i class="fas fa-star-of-life"></i> ${escapeHtml(s.content)}`;
-            wrapper.appendChild(div);
-        });
+        let slides = getSlides(); let wrapper = document.getElementById("sliderWrapper"); if (!wrapper) return;
+        wrapper.innerHTML = ""; slides.forEach(s => { let div = document.createElement("div"); div.className = "swiper-slide"; if (s.type === "image") div.innerHTML = `<img src="${s.content}" alt="تبلیغ">`; else div.innerHTML = `<i class="fas fa-star-of-life"></i> ${escapeHtml(s.content)}`; wrapper.appendChild(div); });
         if (swiperInstance) swiperInstance.destroy(true, true);
         swiperInstance = new Swiper('.mySwiper', { loop: true, autoplay: { delay: 3000 }, pagination: { el: '.swiper-pagination', clickable: true } });
     }
     function renderAdminSlides() {
         let slides = getSlides(); let container = document.getElementById("slidesList"); if (!container) return;
         if (slides.length === 0) { container.innerHTML = "<p>هیچ تبلیغی نیست</p>"; return; }
-        let html = "";
-        slides.forEach((s, idx) => {
-            let preview = s.type === "image" ? `<img src="${s.content}" style="max-width:50px; max-height:50px; border-radius:12px;">` : `📝 ${escapeHtml(s.content.substring(0, 30))}`;
-            html += `<div class="flex-row" style="justify-content:space-between; background:#fef0cf; border-radius:28px; padding:8px; margin-bottom:8px;"><span>${preview}</span><button class="delSlideBtn" data-index="${idx}" style="background:#c0392b;">حذف</button></div>`;
-        });
-        container.innerHTML = html;
-        document.querySelectorAll(".delSlideBtn").forEach(btn => {
-            btn.onclick = () => {
-                let idx = parseInt(btn.dataset.index);
-                let newSlides = getSlides();
-                newSlides.splice(idx, 1);
-                saveSlides(newSlides);
-                renderAdminSlides();
-                renderSlider();
-                showToast("اسلاید حذف شد");
-            };
-        });
+        let html = ""; slides.forEach((s, idx) => { let preview = s.type === "image" ? `<img src="${s.content}" style="max-width:50px; max-height:50px; border-radius:12px;">` : `📝 ${escapeHtml(s.content.substring(0, 30))}`; html += `<div class="flex-row" style="justify-content:space-between; background:#fef0cf; border-radius:28px; padding:8px; margin-bottom:8px;"><span>${preview}</span><button class="delSlideBtn" data-index="${idx}" style="background:#c0392b;">حذف</button></div>`; });
+        container.innerHTML = html; document.querySelectorAll(".delSlideBtn").forEach(btn => { btn.onclick = () => { let idx = parseInt(btn.dataset.index); let newSlides = getSlides(); newSlides.splice(idx,1); saveSlides(newSlides); renderAdminSlides(); renderSlider(); showToast("اسلاید حذف شد"); }; });
     }
-    function addImageSlide() {
-        let fileInput = document.getElementById("slideImageInput");
-        let file = fileInput.files[0];
-        if (!file) { showToast("لطفاً یک عکس انتخاب کنید"); return; }
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            let base64 = e.target.result;
-            let slides = getSlides();
-            slides.push({ type: "image", content: base64 });
-            saveSlides(slides);
-            fileInput.value = "";
-            renderAdminSlides();
-            renderSlider();
-            showToast("اسلاید تصویری اضافه شد");
-        };
-        reader.readAsDataURL(file);
-    }
-    function addTextSlide() {
-        let text = document.getElementById("slideTextAlt").value.trim();
-        if (!text) { showToast("متن تبلیغ را وارد کنید"); return; }
-        let slides = getSlides();
-        slides.push({ type: "text", content: text });
-        saveSlides(slides);
-        document.getElementById("slideTextAlt").value = "";
-        renderAdminSlides();
-        renderSlider();
-        showToast("اسلاید متنی اضافه شد");
-    }
+    function addImageSlide() { let fileInput = document.getElementById("slideImageInput"); let file = fileInput.files[0]; if (!file) { showToast("لطفاً یک عکس انتخاب کنید"); return; } let reader = new FileReader(); reader.onload = function(e) { let base64 = e.target.result; let slides = getSlides(); slides.push({ type: "image", content: base64 }); saveSlides(slides); fileInput.value = ""; renderAdminSlides(); renderSlider(); showToast("اسلاید تصویری اضافه شد"); }; reader.readAsDataURL(file); }
+    function addTextSlide() { let text = document.getElementById("slideTextAlt").value.trim(); if (!text) { showToast("متن تبلیغ را وارد کنید"); return; } let slides = getSlides(); slides.push({ type: "text", content: text }); saveSlides(slides); document.getElementById("slideTextAlt").value = ""; renderAdminSlides(); renderSlider(); showToast("اسلاید متنی اضافه شد"); }
 
-    // ---------- احراز هویت (همانند قبل) ----------
+    // ---------- احراز هویت کاربر ----------
     let regTempCode = null, regTempData = null, resetCodeStore = null, resetMobileStore = null;
     function showTab(tab) {
         document.getElementById("loginForm").style.display = (tab === 'login') ? 'block' : 'none';
@@ -458,46 +410,21 @@
         if (!fullName || !username || !mobile || !pwd) { showToast("همه فیلدها را پر کنید"); return; }
         if (pwd !== confirm) { showToast("رمز و تکرار مطابقت ندارند"); return; }
         if (!/^09\d{9}$/.test(mobile)) { showToast("شماره نامعتبر"); return; }
-        let users = getUsers();
-        if (users.find(u => u.username === username)) { showToast("نام کاربری تکراری"); return; }
-        if (users.find(u => u.mobile === mobile)) { showToast("شماره قبلاً ثبت شده"); return; }
-        let code = Math.floor(100000 + Math.random() * 900000).toString();
-        regTempCode = code; regTempData = { fullName, username, mobile, password: pwd };
-        document.getElementById("regCodeSection").style.display = "block";
-        document.getElementById("registerError").innerHTML = `<span style="color:green;">📱 کد: ${code}</span>`;
-        showToast("کد ارسال شد");
+        let users = getUsers(); if (users.find(u => u.username === username)) { showToast("نام کاربری تکراری"); return; } if (users.find(u => u.mobile === mobile)) { showToast("شماره قبلاً ثبت شده"); return; }
+        let code = Math.floor(100000 + Math.random() * 900000).toString(); regTempCode = code; regTempData = { fullName, username, mobile, password: pwd };
+        document.getElementById("regCodeSection").style.display = "block"; document.getElementById("registerError").innerHTML = `<span style="color:green;">📱 کد: ${code}</span>`; showToast("کد ارسال شد");
     };
-    document.getElementById("completeRegisterBtn").onclick = () => {
-        if (!regTempCode || document.getElementById("regVerifyCode").value.trim() !== regTempCode) { showToast("کد نامعتبر"); return; }
-        let users = getUsers(); users.push({ id: Date.now(), ...regTempData }); saveUsers(users);
-        showToast("ثبت‌نام موفق"); document.getElementById("regCodeSection").style.display = "none"; document.getElementById("registerForm").reset(); regTempData = null; showTab('login');
-    };
-    document.getElementById("doLoginBtn").onclick = () => {
-        let loginId = document.getElementById("loginUsername").value.trim(), pwd = document.getElementById("loginPassword").value;
-        let user = getUsers().find(u => (u.username === loginId || u.mobile === loginId) && u.password === pwd);
-        if (user) { localStorage.setItem("currentNormalUser", JSON.stringify({ username: user.username, fullName: user.fullName, mobile: user.mobile })); renderUserHome(); setPage("userHomePage"); showToast("خوش آمدید"); }
-        else document.getElementById("loginError").innerText = "نام کاربری یا رمز اشتباه";
-    };
-    document.getElementById("sendResetCodeBtn").onclick = () => {
-        let mobile = document.getElementById("forgotMobile").value.trim(); let user = getUsers().find(u => u.mobile === mobile);
-        if (!user) { showToast("شماره ثبت نشده"); return; }
-        let code = Math.floor(100000 + Math.random() * 900000).toString(); resetCodeStore = code; resetMobileStore = mobile;
-        document.getElementById("resetCodeSection").style.display = "block"; document.getElementById("forgotError").innerHTML = `<span style="color:green;">کد: ${code}</span>`;
-    };
-    document.getElementById("resetPasswordBtn").onclick = () => {
-        let entered = document.getElementById("resetCodeInput").value.trim(), newPwd = document.getElementById("newPassword").value, confirm = document.getElementById("confirmNewPassword").value;
-        if (!resetCodeStore || entered !== resetCodeStore) { showToast("کد نامعتبر"); return; }
-        if (!newPwd || newPwd !== confirm) { showToast("رمز جدید مطابقت ندارد"); return; }
-        let users = getUsers(); let idx = users.findIndex(u => u.mobile === resetMobileStore);
-        if (idx !== -1) { users[idx].password = newPwd; saveUsers(users); showToast("رمز تغییر کرد"); document.getElementById("resetCodeSection").style.display = "none"; showTab('login'); }
-    };
+    document.getElementById("completeRegisterBtn").onclick = () => { if (!regTempCode || document.getElementById("regVerifyCode").value.trim() !== regTempCode) { showToast("کد نامعتبر"); return; } let users = getUsers(); users.push({ id: Date.now(), ...regTempData }); saveUsers(users); showToast("ثبت‌نام موفق"); document.getElementById("regCodeSection").style.display = "none"; document.getElementById("registerForm").reset(); regTempData = null; showTab('login'); };
+    document.getElementById("doLoginBtn").onclick = () => { let loginId = document.getElementById("loginUsername").value.trim(), pwd = document.getElementById("loginPassword").value; let user = getUsers().find(u => (u.username === loginId || u.mobile === loginId) && u.password === pwd); if (user) { localStorage.setItem("currentNormalUser", JSON.stringify({ username: user.username, fullName: user.fullName, mobile: user.mobile })); renderUserHome(); setPage("userHomePage"); showToast("خوش آمدید"); } else document.getElementById("loginError").innerText = "نام کاربری یا رمز اشتباه"; };
+    document.getElementById("sendResetCodeBtn").onclick = () => { let mobile = document.getElementById("forgotMobile").value.trim(); let user = getUsers().find(u => u.mobile === mobile); if (!user) { showToast("شماره ثبت نشده"); return; } let code = Math.floor(100000 + Math.random() * 900000).toString(); resetCodeStore = code; resetMobileStore = mobile; document.getElementById("resetCodeSection").style.display = "block"; document.getElementById("forgotError").innerHTML = `<span style="color:green;">کد: ${code}</span>`; };
+    document.getElementById("resetPasswordBtn").onclick = () => { let entered = document.getElementById("resetCodeInput").value.trim(), newPwd = document.getElementById("newPassword").value, confirm = document.getElementById("confirmNewPassword").value; if (!resetCodeStore || entered !== resetCodeStore) { showToast("کد نامعتبر"); return; } if (!newPwd || newPwd !== confirm) { showToast("رمز جدید مطابقت ندارد"); return; } let users = getUsers(); let idx = users.findIndex(u => u.mobile === resetMobileStore); if (idx !== -1) { users[idx].password = newPwd; saveUsers(users); showToast("رمز تغییر کرد"); document.getElementById("resetCodeSection").style.display = "none"; showTab('login'); } };
     function logout() { localStorage.removeItem("currentNormalUser"); setPage("loginPage"); showTab('login'); }
     document.getElementById("logoutBtn").onclick = logout;
     document.getElementById("copyUserTextBtn").onclick = () => { let txt = document.getElementById("copyableTextUser").innerText; navigator.clipboard.writeText(txt).then(() => showToast("کپی شد")); };
     document.getElementById("backToUserHome").onclick = () => setPage("userHomePage");
     document.getElementById("backToCategories").onclick = () => setPage("userHomePage");
     document.getElementById("backToChapterSelect").onclick = () => { setPage("chapterSelectPage"); renderChapterSelect(currentCategoryId, currentCategoryTitle); };
-    // ---------- نمایش دسته‌ها با آیکون خلاقانه ----------
+    // ---------- نمایش دسته‌ها و PDFها ----------
     let currentCategoryId = null, currentCategoryTitle = null, currentChapterId = null, currentChapterCatId = null;
     function renderUserHome() {
         let user = JSON.parse(localStorage.getItem("currentNormalUser")); if (!user) return;
@@ -505,19 +432,9 @@
         let cats = getCategories(); cats.sort((a, b) => a.order - b.order);
         let container = document.getElementById("userCategoriesGrid"); container.innerHTML = "";
         cats.forEach((cat, idx) => {
-            let count = 0;
-            if (cat.hasChapters) {
-                for (let i = 1; i <= 9; i++) count += getPdfs().filter(p => p.categoryId === cat.id && p.chapter === i).length;
-            } else {
-                count = getPdfs().filter(p => p.categoryId === cat.id && !p.chapter).length;
-            }
-            let div = document.createElement("div"); div.className = "cat-card";
-            let icon = getCatIcon(idx); // آیکون خلاقانه
-            div.innerHTML = `<div class="cat-icon">${icon}</div><div class="cat-title">${escapeHtml(cat.title)}</div><div class="pdf-count">${count} فایل</div>`;
-            div.onclick = () => {
-                if (cat.hasChapters) { currentCategoryId = cat.id; currentCategoryTitle = cat.title; renderChapterSelect(cat.id, cat.title); setPage("chapterSelectPage"); }
-                else { openCategory(cat.id, cat.title); }
-            };
+            let count = 0; if (cat.hasChapters) { for (let i = 1; i <= 9; i++) count += getPdfs().filter(p => p.categoryId === cat.id && p.chapter === i).length; } else { count = getPdfs().filter(p => p.categoryId === cat.id && !p.chapter).length; }
+            let div = document.createElement("div"); div.className = "cat-card"; div.innerHTML = `<div class="cat-icon">${getCatIcon(idx)}</div><div class="cat-title">${escapeHtml(cat.title)}</div><div class="pdf-count">${count} فایل</div>`;
+            div.onclick = () => { if (cat.hasChapters) { currentCategoryId = cat.id; currentCategoryTitle = cat.title; renderChapterSelect(cat.id, cat.title); setPage("chapterSelectPage"); } else { openCategory(cat.id, cat.title); } };
             container.appendChild(div);
         });
         document.getElementById("userFooterNote").innerHTML = localStorage.getItem("footerText") || "";
@@ -526,21 +443,14 @@
     }
     function renderChapterSelect(catId, catTitle) {
         let container = document.getElementById("chapterGrid"); container.innerHTML = "";
-        for (let i = 1; i <= 9; i++) {
-            let count = getPdfs().filter(p => p.categoryId === catId && p.chapter === i).length;
-            let div = document.createElement("div"); div.className = "chapter-card";
-            div.innerHTML = `<div>فصل ${i}</div><div class="pdf-count">${count} PDF</div>`;
-            div.onclick = () => openChapterPdfs(catId, i);
-            container.appendChild(div);
-        }
+        for (let i = 1; i <= 9; i++) { let count = getPdfs().filter(p => p.categoryId === catId && p.chapter === i).length; let div = document.createElement("div"); div.className = "chapter-card"; div.innerHTML = `<div>فصل ${i}</div><div class="pdf-count">${count} PDF</div>`; div.onclick = () => openChapterPdfs(catId, i); container.appendChild(div); }
     }
     function openChapterPdfs(catId, chapter) {
         currentChapterId = chapter; currentChapterCatId = catId;
         let pdfs = getPdfs().filter(p => p.categoryId === catId && p.chapter === chapter);
         let container = document.getElementById("chapterPdfsList");
         if (pdfs.length === 0) { container.innerHTML = "<p>هیچ فایلی برای این فصل وجود ندارد.</p>"; setPage("chapterPdfsPage"); return; }
-        let html = "";
-        pdfs.forEach(p => { html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div><button class="viewChapterPdf" data-id="${p.id}">👁️ باز</button><button class="downloadChapterPdf" data-id="${p.id}">⬇️ دانلود</button></div></div>`; });
+        let html = ""; pdfs.forEach(p => { html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div><button class="viewChapterPdf" data-id="${p.id}">👁️ باز</button><button class="downloadChapterPdf" data-id="${p.id}">⬇️ دانلود</button></div></div>`; });
         container.innerHTML = html;
         document.querySelectorAll(".viewChapterPdf").forEach(btn => btn.onclick = () => viewPdf(parseInt(btn.dataset.id)));
         document.querySelectorAll(".downloadChapterPdf").forEach(btn => btn.onclick = () => downloadPdf(parseInt(btn.dataset.id)));
@@ -549,37 +459,24 @@
     function viewPdf(id) { let p = getPdfs().find(p => p.id === id); if (p?.data) { let bin = atob(p.data); let arr = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i); window.open(URL.createObjectURL(new Blob([arr], { type: "application/pdf" })), "_blank"); } else showToast("خطا"); }
     function downloadPdf(id) { let p = getPdfs().find(p => p.id === id); if (p?.data) { let bin = atob(p.data); let arr = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i); let a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([arr], { type: "application/pdf" })); a.download = p.name; a.click(); showToast("دانلود شروع شد"); } }
     function openCategory(catId, title) {
-        currentCategoryId = catId; currentCategoryTitle = title;
-        document.getElementById("userCatTitle").innerHTML = title;
+        currentCategoryId = catId; currentCategoryTitle = title; document.getElementById("userCatTitle").innerHTML = title;
         let pdfs = getPdfs().filter(p => p.categoryId === catId && !p.chapter);
         let container = document.getElementById("userPdfsList");
         if (pdfs.length === 0) { container.innerHTML = "<p>هیچ فایلی نیست.</p>"; setPage("userCategoryPage"); return; }
-        let html = "";
-        pdfs.forEach(p => { html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div><button class="viewPdf" data-id="${p.id}">👁️ باز</button><button class="downloadPdf" data-id="${p.id}">⬇️ دانلود</button></div></div>`; });
+        let html = ""; pdfs.forEach(p => { html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div><button class="viewPdf" data-id="${p.id}">👁️ باز</button><button class="downloadPdf" data-id="${p.id}">⬇️ دانلود</button></div></div>`; });
         container.innerHTML = html;
         document.querySelectorAll(".viewPdf").forEach(btn => btn.onclick = () => viewPdf(parseInt(btn.dataset.id)));
         document.querySelectorAll(".downloadPdf").forEach(btn => btn.onclick = () => downloadPdf(parseInt(btn.dataset.id)));
         setPage("userCategoryPage");
     }
 
-    // ---------- مدیریت ادمین ----------
+    // ---------- مدیریت ادمین (دسته‌ها، PDFها) ----------
     let adminAuthenticated = false;
-    function loadAdminPanel() {
-        if (!adminAuthenticated) return;
-        renderManageCategories(); refreshAdminSelects(); renderAdminPdfList(); renderAdminSlides();
-        document.getElementById("footerTextAdmin").value = localStorage.getItem("footerText") || "";
-        document.getElementById("copyTextAdmin").value = localStorage.getItem("copyText") || "";
-        document.getElementById("appTitleInput").value = getAppTitle();
-        renderUsersList();
-    }
+    function loadAdminPanel() { if (!adminAuthenticated) return; renderManageCategories(); refreshAdminSelects(); renderAdminPdfList(); renderAdminSlides(); document.getElementById("footerTextAdmin").value = localStorage.getItem("footerText") || ""; document.getElementById("copyTextAdmin").value = localStorage.getItem("copyText") || ""; document.getElementById("appTitleInput").value = getAppTitle(); renderUsersList(); }
     function renderManageCategories() {
-        let cats = getCategories(); cats.sort((a, b) => a.order - b.order);
-        let html = "";
-        cats.forEach(cat => {
-            html += `<div class="flex-row" style="margin-bottom:12px;"><input type="text" id="catName_${cat.id}" value="${escapeHtml(cat.title)}" style="flex:2;"><button class="saveCat" data-id="${cat.id}">ذخیره</button><button class="upCat" data-id="${cat.id}">⬆️</button><button class="downCat" data-id="${cat.id}">⬇️</button><button class="delCat" data-id="${cat.id}" style="background:#c0392b;">حذف</button></div>`;
-        });
-        document.getElementById("catsManage").innerHTML = html;
-        attachCatEvents();
+        let cats = getCategories(); cats.sort((a, b) => a.order - b.order); let html = "";
+        cats.forEach(cat => { html += `<div class="flex-row" style="margin-bottom:12px;"><input type="text" id="catName_${cat.id}" value="${escapeHtml(cat.title)}" style="flex:2;"><button class="saveCat" data-id="${cat.id}">ذخیره</button><button class="upCat" data-id="${cat.id}">⬆️</button><button class="downCat" data-id="${cat.id}">⬇️</button><button class="delCat" data-id="${cat.id}" style="background:#c0392b;">حذف</button></div>`; });
+        document.getElementById("catsManage").innerHTML = html; attachCatEvents();
     }
     function attachCatEvents() {
         document.querySelectorAll(".saveCat").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); let newName = document.getElementById(`catName_${id}`).value.trim(); if (newName) { let cats = getCategories(); let c = cats.find(c => c.id === id); if (c) c.title = newName; saveCategories(cats); renderManageCategories(); renderUserHome(); refreshAdminSelects(); } });
@@ -590,72 +487,126 @@
     function moveCat(id, dir) { let cats = getCategories(); cats.sort((a, b) => a.order - b.order); let idx = cats.findIndex(c => c.id === id); if (dir === -1 && idx === 0) return; if (dir === 1 && idx === cats.length - 1) return; let temp = cats[idx].order; cats[idx].order = cats[idx + dir].order; cats[idx + dir].order = temp; saveCategories(cats); renderManageCategories(); renderUserHome(); refreshAdminSelects(); }
     function addCategoryAdmin() { let name = document.getElementById("newCatName").value.trim(); if (!name) return; let cats = getCategories(); let maxOrder = cats.length ? Math.max(...cats.map(c => c.order)) : -1; cats.push({ id: Date.now(), title: name, order: maxOrder + 1, hasChapters: false }); saveCategories(cats); document.getElementById("newCatName").value = ""; renderManageCategories(); renderUserHome(); refreshAdminSelects(); }
     function refreshAdminSelects() {
-        let cats = getCategories();
-        let selUp = document.getElementById("adminCatSelect"); let selDel = document.getElementById("adminCatDelete");
-        if (selUp) selUp.innerHTML = ""; if (selDel) selDel.innerHTML = "";
-        cats.forEach(cat => {
-            let optUp = new Option(cat.title, cat.id);
-            let optDel = new Option(cat.title, cat.id);
-            selUp.appendChild(optUp); selDel.appendChild(optDel);
-        });
-        let chapterDivUp = document.getElementById("chapterSelectForAdmin"); let chapterDivDel = document.getElementById("chapterSelectForDelete");
-        let selChapterUp = document.getElementById("adminChapterSelect"); let selChapterDel = document.getElementById("adminChapterDelete");
-        let selectedCatId = parseInt(selUp.value);
-        let selectedCat = cats.find(c => c.id === selectedCatId);
-        if (selectedCat && selectedCat.hasChapters) { chapterDivUp.style.display = "block"; selChapterUp.innerHTML = "<option value=''>-- انتخاب فصل --</option>"; for (let i = 1; i <= 9; i++) selChapterUp.appendChild(new Option(`فصل ${i}`, i)); } else { chapterDivUp.style.display = "none"; selChapterUp.innerHTML = ""; }
-        let selectedDelCat = parseInt(selDel.value);
-        let selectedDel = cats.find(c => c.id === selectedDelCat);
-        if (selectedDel && selectedDel.hasChapters) { chapterDivDel.style.display = "block"; selChapterDel.innerHTML = "<option value=''>-- انتخاب فصل --</option>"; for (let i = 1; i <= 9; i++) selChapterDel.appendChild(new Option(`فصل ${i}`, i)); selChapterDel.onchange = () => renderAdminPdfList(); } else { chapterDivDel.style.display = "none"; selChapterDel.innerHTML = ""; renderAdminPdfList(); }
-        selUp.onchange = () => refreshAdminSelects();
-        selDel.onchange = () => refreshAdminSelects();
+        let cats = getCategories(); let selUp = document.getElementById("adminCatSelect"); let selDel = document.getElementById("adminCatDelete"); if (selUp) selUp.innerHTML = ""; if (selDel) selDel.innerHTML = ""; cats.forEach(cat => { selUp.appendChild(new Option(cat.title, cat.id)); selDel.appendChild(new Option(cat.title, cat.id)); });
+        let chapterDivUp = document.getElementById("chapterSelectForAdmin"); let chapterDivDel = document.getElementById("chapterSelectForDelete"); let selChapterUp = document.getElementById("adminChapterSelect"); let selChapterDel = document.getElementById("adminChapterDelete"); let selectedCatId = parseInt(selUp.value); let selectedCat = cats.find(c => c.id === selectedCatId); if (selectedCat && selectedCat.hasChapters) { chapterDivUp.style.display = "block"; selChapterUp.innerHTML = "<option value=''>-- انتخاب فصل --</option>"; for (let i = 1; i <= 9; i++) selChapterUp.appendChild(new Option(`فصل ${i}`, i)); } else { chapterDivUp.style.display = "none"; selChapterUp.innerHTML = ""; }
+        let selectedDelCat = parseInt(selDel.value); let selectedDel = cats.find(c => c.id === selectedDelCat); if (selectedDel && selectedDel.hasChapters) { chapterDivDel.style.display = "block"; selChapterDel.innerHTML = "<option value=''>-- انتخاب فصل --</option>"; for (let i = 1; i <= 9; i++) selChapterDel.appendChild(new Option(`فصل ${i}`, i)); selChapterDel.onchange = () => renderAdminPdfList(); } else { chapterDivDel.style.display = "none"; selChapterDel.innerHTML = ""; renderAdminPdfList(); }
+        selUp.onchange = () => refreshAdminSelects(); selDel.onchange = () => refreshAdminSelects();
     }
     function renderAdminPdfList() {
-        let catId = parseInt(document.getElementById("adminCatDelete").value); if (isNaN(catId)) return;
-        let chapter = null;
-        let cat = getCategories().find(c => c.id === catId);
-        if (cat && cat.hasChapters) {
-            let selChap = document.getElementById("adminChapterDelete"); if (selChap) chapter = parseInt(selChap.value);
-            if (!chapter) { document.getElementById("adminPdfList").innerHTML = "<p>لطفاً فصل را انتخاب کنید</p>"; return; }
-        }
-        let pdfs = getPdfs().filter(p => p.categoryId === catId && ((chapter !== null) ? (p.chapter === chapter) : (!p.chapter)));
-        let container = document.getElementById("adminPdfList");
-        if (pdfs.length === 0) { container.innerHTML = "<p>بدون فایل</p>"; return; }
-        let html = "";
-        pdfs.forEach(p => { html += `<div class="flex-row" style="justify-content:space-between; background:#fff0cf; margin:6px 0; padding:6px 12px; border-radius:28px;"><span>${escapeHtml(p.name)}</span><button class="delPdfAdmin" data-id="${p.id}" style="background:#c0392b;">حذف</button></div>`; });
-        container.innerHTML = html;
-        document.querySelectorAll(".delPdfAdmin").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); let newPdfs = getPdfs().filter(p => p.id !== id); savePdfs(newPdfs); renderAdminPdfList(); renderUserHome(); showToast("حذف شد"); });
+        let catId = parseInt(document.getElementById("adminCatDelete").value); if (isNaN(catId)) return; let chapter = null; let cat = getCategories().find(c => c.id === catId); if (cat && cat.hasChapters) { let selChap = document.getElementById("adminChapterDelete"); if (selChap) chapter = parseInt(selChap.value); if (!chapter) { document.getElementById("adminPdfList").innerHTML = "<p>لطفاً فصل را انتخاب کنید</p>"; return; } }
+        let pdfs = getPdfs().filter(p => p.categoryId === catId && ((chapter !== null) ? (p.chapter === chapter) : (!p.chapter))); let container = document.getElementById("adminPdfList"); if (pdfs.length === 0) { container.innerHTML = "<p>بدون فایل</p>"; return; } let html = ""; pdfs.forEach(p => { html += `<div class="flex-row" style="justify-content:space-between; background:#fff0cf; margin:6px 0; padding:6px 12px; border-radius:28px;"><span>${escapeHtml(p.name)}</span><button class="delPdfAdmin" data-id="${p.id}" style="background:#c0392b;">حذف</button></div>`; }); container.innerHTML = html; document.querySelectorAll(".delPdfAdmin").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); let newPdfs = getPdfs().filter(p => p.id !== id); savePdfs(newPdfs); renderAdminPdfList(); renderUserHome(); showToast("حذف شد"); });
     }
     function uploadPdfAdmin() {
         let file = document.getElementById("pdfFileInput").files[0]; if (!file) { showToast("فایل را انتخاب کنید"); return; } if (file.type !== "application/pdf") { showToast("فایل PDF نیست"); return; }
-        let catId = parseInt(document.getElementById("adminCatSelect").value);
-        let chapter = null;
-        let cat = getCategories().find(c => c.id === catId);
-        if (cat && cat.hasChapters) {
-            let selChap = document.getElementById("adminChapterSelect"); if (selChap) chapter = parseInt(selChap.value);
-            if (!chapter) { showToast("لطفاً فصل را انتخاب کنید"); return; }
-        }
-        let customName = document.getElementById("pdfNameInput").value.trim(); let finalName = customName || file.name;
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            let base64 = e.target.result.split(",")[1];
-            let pdfs = getPdfs();
-            pdfs.push({ id: Date.now(), categoryId: catId, name: finalName, data: base64, chapter: chapter });
-            savePdfs(pdfs);
-            showToast("PDF آپلود شد");
-            document.getElementById("pdfFileInput").value = ""; document.getElementById("pdfNameInput").value = "";
-            renderUserHome(); refreshAdminSelects();
-        };
-        reader.readAsDataURL(file);
+        let catId = parseInt(document.getElementById("adminCatSelect").value); let chapter = null; let cat = getCategories().find(c => c.id === catId); if (cat && cat.hasChapters) { let selChap = document.getElementById("adminChapterSelect"); if (selChap) chapter = parseInt(selChap.value); if (!chapter) { showToast("لطفاً فصل را انتخاب کنید"); return; } }
+        let customName = document.getElementById("pdfNameInput").value.trim(); let finalName = customName || file.name; let reader = new FileReader(); reader.onload = function(e) { let base64 = e.target.result.split(",")[1]; let pdfs = getPdfs(); pdfs.push({ id: Date.now(), categoryId: catId, name: finalName, data: base64, chapter: chapter }); savePdfs(pdfs); showToast("PDF آپلود شد"); document.getElementById("pdfFileInput").value = ""; document.getElementById("pdfNameInput").value = ""; renderUserHome(); refreshAdminSelects(); }; reader.readAsDataURL(file);
     }
-    function saveAdminSettings() {
-        let newTitle = document.getElementById("appTitleInput").value.trim(); if (newTitle) setAppTitle(newTitle);
-        localStorage.setItem("footerText", document.getElementById("footerTextAdmin").value);
-        localStorage.setItem("copyText", document.getElementById("copyTextAdmin").value);
-        renderUserHome(); updateMainTitles(); showToast("تنظیمات ذخیره شد");
-    }
+    function saveAdminSettings() { let newTitle = document.getElementById("appTitleInput").value.trim(); if (newTitle) setAppTitle(newTitle); localStorage.setItem("footerText", document.getElementById("footerTextAdmin").value); localStorage.setItem("copyText", document.getElementById("copyTextAdmin").value); renderUserHome(); updateMainTitles(); showToast("تنظیمات ذخیره شد"); }
     function renderUsersList() { let users = getUsers(); let container = document.getElementById("usersList"); if (users.length === 0) { container.innerHTML = "<p>کاربری ثبت نام نکرده</p>"; return; } let html = "<ul>"; users.forEach(u => { html += `<li>${escapeHtml(u.fullName)} (${u.username}) - ${u.mobile}</li>`; }); html += "</ul>"; container.innerHTML = html; }
 
-    // رویدادهای ادمین
+    // ---------- آزمون آنلاین پیشرفته (با قابلیت آپلود تصویر برای سوالات و گزینه‌ها) ----------
+    let currentExamEditing = null; let currentStudentExam = null, studentAnswers = [], examTimerInterval = null, timeLeft = 0, currentQIndex = 0;
+    function renderExamQuestionForms() {
+        let container = document.getElementById("examQuestionsList"); if (!container) return;
+        if (!currentExamEditing) currentExamEditing = { questions: [] };
+        container.innerHTML = "";
+        currentExamEditing.questions.forEach((q, idx) => {
+            let div = document.createElement("div"); div.className = "exam-question-card";
+            div.innerHTML = `<h4>سوال ${idx+1}</h4><input type="text" placeholder="متن سوال" value="${escapeHtml(q.text)}" class="examQtext" data-idx="${idx}"><div><label>تصویر سوال (اختیاری):</label><input type="file" accept="image/*" class="examQImage" data-idx="${idx}">${q.image ? `<img src="${q.image}" class="image-preview">` : ""}</div><div class="examOptsContainer" data-idx="${idx}"></div><div class="flex-row"><label>گزینه صحیح (0 تا 3):</label><input type="number" min="0" max="3" value="${q.correctIndex}" class="examCorrect" data-idx="${idx}" style="width:80px;"><button class="removeExamQuestion" data-idx="${idx}" style="background:#c0392b;">حذف سوال</button></div>`;
+            container.appendChild(div);
+            let optsDiv = div.querySelector(".examOptsContainer");
+            for (let i = 0; i < 4; i++) {
+                let optDiv = document.createElement("div"); optDiv.className = "exam-option";
+                optDiv.innerHTML = `<input type="text" placeholder="گزینه ${i+1}" value="${escapeHtml(q.options[i]?.text || '')}" data-idx="${idx}" data-optidx="${i}" class="examOptText" style="flex:2;"><input type="file" accept="image/*" class="examOptImage" data-idx="${idx}" data-optidx="${i}">${q.options[i]?.image ? `<img src="${q.options[i].image}" class="image-preview">` : ""}`;
+                optsDiv.appendChild(optDiv);
+            }
+        });
+        // attach events
+        document.querySelectorAll(".examQtext").forEach(inp => inp.addEventListener("change", function() { let idx = parseInt(this.dataset.idx); currentExamEditing.questions[idx].text = this.value; }));
+        document.querySelectorAll(".examQImage").forEach(inp => inp.addEventListener("change", function() { let idx = parseInt(this.dataset.idx); let file = this.files[0]; if (file) { let reader = new FileReader(); reader.onload = e => { currentExamEditing.questions[idx].image = e.target.result; renderExamQuestionForms(); }; reader.readAsDataURL(file); } }));
+        document.querySelectorAll(".examOptText").forEach(inp => inp.addEventListener("change", function() { let idx = parseInt(this.dataset.idx); let optidx = parseInt(this.dataset.optidx); if (!currentExamEditing.questions[idx].options) currentExamEditing.questions[idx].options = [{}, {}, {}, {}]; currentExamEditing.questions[idx].options[optidx].text = this.value; }));
+        document.querySelectorAll(".examOptImage").forEach(inp => inp.addEventListener("change", function() { let idx = parseInt(this.dataset.idx); let optidx = parseInt(this.dataset.optidx); let file = this.files[0]; if (file) { let reader = new FileReader(); reader.onload = e => { if (!currentExamEditing.questions[idx].options) currentExamEditing.questions[idx].options = [{}, {}, {}, {}]; currentExamEditing.questions[idx].options[optidx].image = e.target.result; renderExamQuestionForms(); }; reader.readAsDataURL(file); } }));
+        document.querySelectorAll(".examCorrect").forEach(inp => inp.addEventListener("change", function() { let idx = parseInt(this.dataset.idx); currentExamEditing.questions[idx].correctIndex = parseInt(this.value); }));
+        document.querySelectorAll(".removeExamQuestion").forEach(btn => btn.addEventListener("click", function() { let idx = parseInt(this.dataset.idx); currentExamEditing.questions.splice(idx, 1); renderExamQuestionForms(); }));
+    }
+    function addExamQuestion() { if (!currentExamEditing) currentExamEditing = { questions: [] }; currentExamEditing.questions.push({ text: "", options: [{}, {}, {}, {}], correctIndex: 0, image: null }); renderExamQuestionForms(); }
+    function saveExamToLocal() {
+        let title = document.getElementById("examTitle").value.trim(); let timeMinutes = parseInt(document.getElementById("examTime").value); let allowBack = document.getElementById("allowBack").value === "yes";
+        if (!title || isNaN(timeMinutes) || timeMinutes <= 0) { showToast("نام و زمان آزمون را وارد کنید"); return; }
+        if (!currentExamEditing || currentExamEditing.questions.length === 0) { showToast("حداقل یک سوال اضافه کنید"); return; }
+        for (let i = 0; i < currentExamEditing.questions.length; i++) { let q = currentExamEditing.questions[i]; if (!q.text.trim()) { showToast(`سوال ${i+1} متن ندارد`); return; } for (let j = 0; j < 4; j++) { if (!q.options[j]?.text?.trim()) { showToast(`سوال ${i+1} گزینه ${j+1} متن ندارد`); return; } } if (q.correctIndex < 0 || q.correctIndex > 3) { showToast(`سوال ${i+1} گزینه صحیح نامعتبر`); return; } }
+        let examId = Date.now().toString(); let newExam = { id: examId, title: title, timeMinutes: timeMinutes, allowBack: allowBack, questions: JSON.parse(JSON.stringify(currentExamEditing.questions)), results: [] };
+        let exams = getOnlineExams(); exams.push(newExam); saveOnlineExams(exams);
+        let link = `${window.location.origin}${window.location.pathname}?exam=${examId}`; document.getElementById("examLink").innerText = link; document.getElementById("examLinkDiv").style.display = "block";
+        currentExamEditing = null; document.getElementById("examTitle").value = ""; document.getElementById("examTime").value = ""; renderExamQuestionForms(); populateExamSelectForResults(); showToast("آزمون ذخیره شد");
+    }
+    function populateExamSelectForResults() {
+        let exams = getOnlineExams(); let select = document.getElementById("examSelectForResults"); if (!select) return; select.innerHTML = '<option value="">-- انتخاب آزمون --</option>'; exams.forEach(ex => { let opt = document.createElement("option"); opt.value = ex.id; opt.textContent = `${ex.title} (${ex.questions.length} سوال)`; select.appendChild(opt); }); select.onchange = () => { let id = select.value; if (!id) { document.getElementById("studentsResultsList").innerHTML = ""; return; } let exam = exams.find(e => e.id === id); if (exam) { let html = ""; exam.results.forEach(r => { html += `<div class="student-item"><span>${escapeHtml(r.name)} - ${r.mobile}</span><span>نمره: ${r.score} از ۲۰</span></div>`; }); if (!html) html = "<p>نتیجه‌ای ثبت نشده</p>"; document.getElementById("studentsResultsList").innerHTML = html; } };
+    }
+    function startStudentExam() {
+        let link = document.getElementById("studentExamLink").value.trim(); let name = document.getElementById("studentName").value.trim(); let mobile = document.getElementById("studentMobile").value.trim(); let nationalCode = document.getElementById("studentNationalCode").value.trim();
+        if (!link || !name || !mobile || !nationalCode) { document.getElementById("studentExamError").innerText = "همه فیلدها را پر کنید"; return; }
+        let match = link.match(/[?&]exam=([^&]+)/); if (!match) { document.getElementById("studentExamError").innerText = "لینک نامعتبر"; return; }
+        let exams = getOnlineExams(); let exam = exams.find(e => e.id === match[1]); if (!exam) { document.getElementById("studentExamError").innerText = "آزمون یافت نشد"; return; }
+        if (exam.results.some(r => r.nationalCode === nationalCode)) { document.getElementById("studentExamError").innerText = "شما قبلاً در این آزمون شرکت کرده‌اید"; return; }
+        currentStudentExam = exam; studentAnswers = new Array(exam.questions.length).fill(null); currentQIndex = 0; timeLeft = exam.timeMinutes * 60;
+        document.getElementById("examMainPanel").style.display = "none"; document.getElementById("examTakingPanel").style.display = "block"; document.getElementById("examResultPanel").style.display = "none"; document.getElementById("examTimerDisplay").innerText = formatTime(timeLeft);
+        if (examTimerInterval) clearInterval(examTimerInterval); examTimerInterval = setInterval(() => { if (timeLeft <= 0) { clearInterval(examTimerInterval); finishStudentExam(); } else { timeLeft--; document.getElementById("examTimerDisplay").innerText = formatTime(timeLeft); } }, 1000);
+        showStudentExamQuestion(0);
+        window.addEventListener('beforeunload', examBeforeUnload); document.addEventListener('visibilitychange', examVisChange);
+    }
+    function formatTime(sec) { let m = Math.floor(sec / 60); let s = sec % 60; return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`; }
+    function showStudentExamQuestion(idx) {
+        let q = currentStudentExam.questions[idx]; let container = document.getElementById("currentExamQuestion"); if (!container) return;
+        let html = `<h3>سوال ${idx+1}: ${escapeHtml(q.text)}</h3>`;
+        if (q.image) html += `<img src="${q.image}" style="max-width:100%; max-height:150px; border-radius:16px; margin:10px 0;">`;
+        html += `<div class="exam-options-container">`;
+        for (let i = 0; i < 4; i++) {
+            let opt = q.options[i]; let isChecked = (studentAnswers[idx] === i);
+            html += `<div class="exam-option"><input type="radio" name="examChoice" value="${i}" ${isChecked ? 'checked' : ''}> <span>${escapeHtml(opt.text || '')}</span>`;
+            if (opt.image) html += `<img src="${opt.image}" style="max-width:80px; max-height:60px; border-radius:12px; margin-right:8px;">`;
+            html += `</div>`;
+        }
+        html += `</div>`;
+        container.innerHTML = html;
+        let radios = container.querySelectorAll('input[type="radio"]'); radios.forEach(r => r.addEventListener('change', (e) => { studentAnswers[idx] = parseInt(e.target.value); }));
+        document.getElementById("examCounter").innerText = `سوال ${idx+1} از ${currentStudentExam.questions.length}`;
+        let prevBtn = document.getElementById("examPrevBtn"); if (currentStudentExam.allowBack) { prevBtn.disabled = (idx === 0); prevBtn.style.opacity = idx === 0 ? '0.5' : '1'; } else { prevBtn.disabled = true; prevBtn.style.opacity = '0.5'; }
+    }
+    function finishStudentExam() {
+        clearInterval(examTimerInterval); window.removeEventListener('beforeunload', examBeforeUnload); document.removeEventListener('visibilitychange', examVisChange);
+        let correct = 0; for (let i = 0; i < currentStudentExam.questions.length; i++) { if (studentAnswers[i] === currentStudentExam.questions[i].correctIndex) correct++; }
+        let score = Math.round((correct / currentStudentExam.questions.length) * 200) / 10;
+        let studentData = { name: document.getElementById("studentName").value.trim(), mobile: document.getElementById("studentMobile").value.trim(), nationalCode: document.getElementById("studentNationalCode").value.trim(), score: score, answers: studentAnswers };
+        let exams = getOnlineExams(); let examIdx = exams.findIndex(e => e.id === currentStudentExam.id); if (examIdx !== -1) { exams[examIdx].results.push(studentData); saveOnlineExams(exams); }
+        document.getElementById("examResultPanel").innerHTML = `<h3>نتیجه آزمون ${currentStudentExam.title}</h3><p>تعداد سوالات: ${currentStudentExam.questions.length}</p><p>پاسخ صحیح: ${correct}</p><p>نمره شما: <strong>${score} از ۲۰</strong></p><button id="examResultBackBtn" class="btn-secondary">بازگشت</button>`;
+        document.getElementById("examResultBackBtn").onclick = () => { document.getElementById("examTakingPanel").style.display = "none"; document.getElementById("examMainPanel").style.display = "block"; document.getElementById("examResultPanel").style.display = "none"; };
+        document.getElementById("examTakingPanel").style.display = "none"; document.getElementById("examResultPanel").style.display = "block"; currentStudentExam = null;
+    }
+    function examBeforeUnload(e) { e.preventDefault(); e.returnValue = ''; document.getElementById("examWarning").style.display = 'block'; setTimeout(() => document.getElementById("examWarning").style.display = 'none', 3000); }
+    function examVisChange() { if (document.hidden) document.getElementById("examWarning").style.display = 'block'; else setTimeout(() => document.getElementById("examWarning").style.display = 'none', 3000); }
+
+    // ---------- راه‌اندازی صفحات آزمون آنلاین ----------
+    function openOnlineExamPortal() {
+        setPage("onlineExamPortalPage");
+        currentExamEditing = null; renderExamQuestionForms(); populateExamSelectForResults();
+        document.getElementById("examMainPanel").style.display = "block"; document.getElementById("examTakingPanel").style.display = "none"; document.getElementById("examResultPanel").style.display = "none";
+        document.getElementById("examTeacherPanel").style.display = "block"; document.getElementById("examStudentPanel").style.display = "none"; document.getElementById("examTeacherTab").classList.add("active"); document.getElementById("examStudentTab").classList.remove("active");
+    }
+    // رویدادهای دکمه‌های آزمون
+    document.getElementById("onlineExamBtn")?.addEventListener("click", openOnlineExamPortal);
+    document.getElementById("backFromExamPortal")?.addEventListener("click", () => setPage("userHomePage"));
+    document.getElementById("examTeacherTab")?.addEventListener("click", () => { document.getElementById("examTeacherPanel").style.display = "block"; document.getElementById("examStudentPanel").style.display = "none"; document.getElementById("examTeacherTab").classList.add("active"); document.getElementById("examStudentTab").classList.remove("active"); });
+    document.getElementById("examStudentTab")?.addEventListener("click", () => { document.getElementById("examTeacherPanel").style.display = "none"; document.getElementById("examStudentPanel").style.display = "block"; document.getElementById("examStudentTab").classList.add("active"); document.getElementById("examTeacherTab").classList.remove("active"); });
+    document.getElementById("addExamQuestionBtn")?.addEventListener("click", addExamQuestion);
+    document.getElementById("saveExamBtn")?.addEventListener("click", saveExamToLocal);
+    document.getElementById("startExamBtnStudent")?.addEventListener("click", startStudentExam);
+    document.getElementById("copyExamLinkBtn")?.addEventListener("click", () => { let link = document.getElementById("examLink").innerText; navigator.clipboard.writeText(link); showToast("لینک کپی شد"); });
+    document.getElementById("examNextBtn")?.addEventListener("click", () => { if (currentQIndex < currentStudentExam?.questions.length - 1) { currentQIndex++; showStudentExamQuestion(currentQIndex); } else if (currentStudentExam && confirm('به انتهای سوالات رسیدید. پایان آزمون؟')) finishStudentExam(); });
+    document.getElementById("examPrevBtn")?.addEventListener("click", () => { if (currentStudentExam?.allowBack && currentQIndex > 0) { currentQIndex--; showStudentExamQuestion(currentQIndex); } });
+    document.getElementById("submitExamBtn")?.addEventListener("click", () => { if (confirm('آیا از پایان آزمون مطمئن هستید؟')) finishStudentExam(); });
+
+    // ---------- رویدادهای ادمین اصلی ----------
     document.getElementById("adminLockBtn").onclick = () => { let pwd = prompt("رمز مدیریت:"); if (pwd === "admin123") { adminAuthenticated = true; loadAdminPanel(); setPage("adminPage"); } else showToast("رمز اشتباه"); };
     document.getElementById("backHomeAdmin").onclick = () => { adminAuthenticated = false; let normal = localStorage.getItem("currentNormalUser"); if (normal) { renderUserHome(); setPage("userHomePage"); } else { setPage("loginPage"); showTab('login'); } };
     document.getElementById("addCatBtn").onclick = addCategoryAdmin;
@@ -667,7 +618,7 @@
     // شروع برنامه
     initData(); updateMainTitles();
     if (localStorage.getItem("currentNormalUser")) { renderUserHome(); setPage("userHomePage"); } else { setPage("loginPage"); showTab('login'); }
-    bindThemeButtons(); // اطمینان از اتصال مجدد دکمه‌ها
+    bindThemeButtons();
 </script>
 </body>
 </html>
