@@ -3,123 +3,104 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ریاضی‌یار | حرفه‌ای با تم و آزمون آنلاین</title>
+    <title>ریاضی‌یار | نسخه نهایی سرمه‌ای</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; transition: background 0.2s, color 0.2s, border 0.2s; }
-        body {
-            font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
-            min-height: 100vh;
-            padding: 20px;
-            transition: background 0.3s, color 0.2s;
-        }
-        body.light { background: linear-gradient(135deg, #e9f3e6 0%, #d4e0ca 100%); color: #1e3a2f; }
-        body.dark { background: linear-gradient(135deg, #1a2a24 0%, #0f1f18 100%); color: #e0e0c0; }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            backdrop-filter: blur(10px);
-            border-radius: 56px;
-            padding: 22px 20px 30px;
-            transition: background 0.3s, box-shadow 0.3s;
-        }
-        body.light .container { background: rgba(255,255,240,0.9); box-shadow: 0 25px 45px rgba(0,20,0,0.2); }
-        body.dark .container { background: rgba(30,40,35,0.9); box-shadow: 0 25px 45px rgba(0,0,0,0.5); border: 1px solid #5a6e5a; }
+        body { font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif; min-height: 100vh; padding: 20px; transition: background 0.3s; }
+        body.light { background: linear-gradient(135deg, #f0f4fc 0%, #dce5f0 100%); color: #0a1a3a; }
+        body.dark { background: linear-gradient(135deg, #0f172a 0%, #0a0f1c 100%); color: #e0e4f0; }
+        .container { max-width: 800px; margin: 0 auto; backdrop-filter: blur(8px); border-radius: 56px; padding: 22px 20px 30px; transition: all 0.3s; }
+        body.light .container { background: rgba(255,255,252,0.92); box-shadow: 0 25px 45px rgba(0,0,0,0.08); }
+        body.dark .container { background: rgba(20,30,55,0.92); box-shadow: 0 25px 45px rgba(0,0,0,0.4); border: 1px solid #2d3a5e; }
         h1, h2, h3 { text-align: center; font-weight: 800; }
-        body.light h1, body.light h2 { background: linear-gradient(135deg, #1f5e3a, #d4a017); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        body.dark h1, body.dark h2 { background: linear-gradient(135deg, #b8e1b0, #f5d742); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        body.light h1, body.light h2 { background: linear-gradient(135deg, #1e2b4f, #c9a03d); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        body.dark h1, body.dark h2 { background: linear-gradient(135deg, #a5c0e8, #f0b84d); -webkit-background-clip: text; background-clip: text; color: transparent; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
-        .theme-toggle {
-            background: #2e7d5e; border: none; border-radius: 40px; padding: 8px 16px; color: white;
-            cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px;
-        }
-        body.dark .theme-toggle { background: #d4af37; color: #1e3a2f; }
+        .theme-toggle { background: #1e2b4f; border: none; border-radius: 40px; padding: 8px 16px; color: white; cursor: pointer; font-weight: bold; display: flex; align-items: center; gap: 8px; }
+        body.dark .theme-toggle { background: #c9a03d; color: #0a1a3a; }
         .page { display: none; animation: fade 0.2s; }
         .active-page { display: block; }
         @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-        button, .btn {
-            background: #2e7d5e; color: white; border: none; padding: 8px 18px; border-radius: 40px;
-            cursor: pointer; font-weight: bold; transition: 0.2s;
-        }
-        body.dark button { background: #d4af37; color: #1e3a2f; }
-        .btn-danger { background: #c0392b; }
-        .btn-secondary { background: #e9e4d0; color: #1e3a2f; }
-        input, select, textarea {
-            width: 100%; padding: 12px; margin: 8px 0; border-radius: 32px;
-            border: 1px solid #ccc; font-family: inherit; background: white;
-        }
-        body.dark input, body.dark select, body.dark textarea { background: #2f3e36; color: white; border-color: #5a6e5a; }
+        button, .btn { background: #1e2b4f; color: white; border: none; padding: 8px 18px; border-radius: 40px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        body.dark button { background: #c9a03d; color: #0a1a3a; }
+        .btn-danger { background: #b91c1c; }
+        .btn-secondary { background: #e2e8f0; color: #1e2b4f; }
+        body.dark .btn-secondary { background: #2d3a5e; color: #e0e4f0; }
+        input, select, textarea { width: 100%; padding: 12px; margin: 8px 0; border-radius: 32px; border: 1px solid #ccc; font-family: inherit; background: white; }
+        body.dark input, body.dark select, body.dark textarea { background: #1e2b4f; color: #e0e4f0; border-color: #4a5a7a; }
         .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 25px 0; }
-        .cat-card {
-            background: linear-gradient(145deg, #fffef5, #fff7e5); border-radius: 36px; padding: 20px 8px;
-            text-align: center; cursor: pointer; transition: 0.25s; box-shadow: 0 12px 18px -8px rgba(0,0,0,0.1);
-            border: 1px solid #f3e3b0;
-        }
-        body.dark .cat-card { background: #2a3a32; border-color: #5a6e5a; }
-        .cat-card:hover { transform: translateY(-6px); background: white; }
-        body.dark .cat-card:hover { background: #3a5a4a; }
-        .cat-icon { font-size: 3rem; margin-bottom: 10px; }
-        body.light .cat-icon { color: #2e7d5e; }
-        body.dark .cat-icon { color: #d4af37; }
+        .cat-card { background: linear-gradient(145deg, #ffffff, #f0f4fc); border-radius: 36px; padding: 20px 8px; text-align: center; cursor: pointer; transition: 0.25s; box-shadow: 0 12px 18px -8px rgba(0,0,0,0.08); border: 1px solid #cfdfef; }
+        body.dark .cat-card { background: #1e2b4f; border-color: #3a4a6e; box-shadow: none; }
+        .cat-card:hover { transform: translateY(-6px); background: #ffffff; }
+        body.dark .cat-card:hover { background: #2a3a62; }
+        .cat-icon { font-size: 3rem; margin-bottom: 10px; color: #1e2b4f; }
+        body.dark .cat-icon { color: #c9a03d; }
         .cat-title { font-weight: 800; font-size: 1.1rem; }
-        .pdf-count {
-            font-size: 0.7rem; background: #d4af37; display: inline-block; padding: 3px 12px;
-            border-radius: 30px; margin-top: 8px; font-weight: bold; color: #1e3a2f;
-        }
-        .pdf-item {
-            background: #fffdf5; border-radius: 28px; padding: 12px 16px; margin-bottom: 12px;
-            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
-            border-right: 6px solid #d4af37;
-        }
-        body.dark .pdf-item { background: #2f4038; border-right-color: #d4af37; }
-        .admin-section { background: rgba(255,250,225,0.98); border-radius: 36px; padding: 18px; margin-bottom: 25px; }
-        body.dark .admin-section { background: #2a3a32; }
-        .swiper { width: 100%; border-radius: 32px; margin: 20px 0; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .swiper-slide { background: rgba(255,250,210,0.9); border-radius: 32px; padding: 18px 12px; text-align: center; font-weight: bold; min-height: 150px; display: flex; align-items: center; justify-content: center; }
-        .swiper-slide img { max-width: 100%; max-height: 140px; object-fit: contain; border-radius: 20px; }
-        body.dark .swiper-slide { background: #3a4f44; color: #f0e6b0; }
+        .pdf-count { font-size: 0.7rem; background: #c9a03d; display: inline-block; padding: 3px 12px; border-radius: 30px; margin-top: 8px; font-weight: bold; color: #0a1a3a; }
+        .pdf-item { background: #ffffff; border-radius: 28px; padding: 12px 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; border-right: 6px solid #c9a03d; }
+        body.dark .pdf-item { background: #1e2b4f; border-right-color: #c9a03d; }
+        .admin-section { background: rgba(240,245,255,0.98); border-radius: 36px; padding: 18px; margin-bottom: 25px; }
+        body.dark .admin-section { background: #1a2645; }
+        /* اسلایدر بدون حاشیه */
+        .swiper { width: 100%; border-radius: 32px; margin: 20px 0; background: transparent; }
+        .swiper-slide { background: transparent; border-radius: 32px; padding: 0; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .swiper-slide img { width: 100%; max-height: 220px; object-fit: contain; border-radius: 24px; display: block; transition: transform 0.2s; }
+        .swiper-slide img:hover { transform: scale(1.02); }
+        .swiper-slide .slide-text { padding: 20px; font-weight: bold; font-size: 1.1rem; background: rgba(255,255,255,0.7); border-radius: 32px; backdrop-filter: blur(4px); }
+        body.dark .swiper-slide .slide-text { background: rgba(0,0,0,0.5); color: #f0e6c0; }
+        /* لایت‌باکس */
+        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; cursor: pointer; }
+        .lightbox img { max-width: 90%; max-height: 90%; object-fit: contain; border-radius: 16px; box-shadow: 0 0 30px rgba(0,0,0,0.5); }
         .chapter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
-        .chapter-card { background: #f9eec1; text-align: center; padding: 12px; border-radius: 32px; cursor: pointer; font-weight: bold; transition: 0.2s; }
-        body.dark .chapter-card { background: #3a5a4a; color: #f0f0c0; }
-        .chapter-card:hover { transform: scale(0.98); background: #e6d8a0; }
+        .chapter-card { background: #f0f4fc; text-align: center; padding: 12px; border-radius: 32px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        body.dark .chapter-card { background: #1e2b4f; color: #e0e4f0; }
+        .chapter-card:hover { transform: scale(0.98); background: #e0e8f4; }
         .flex-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
-        .toast {
-            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
-            background: #1f5e3a; color: white; padding: 8px 20px; border-radius: 50px;
-            display: none; z-index: 1000; font-weight: bold;
-        }
-        .lock-icon {
-            position: fixed; bottom: 20px; left: 20px; background: #d4af37; width: 52px; height: 52px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 28px; cursor: pointer; z-index: 200; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .copy-area { background: #f3efdf; border-radius: 44px; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        body.dark .copy-area { background: #2a3a32; }
-        .footer-note { text-align: center; background: #e8e2cd; border-radius: 40px; padding: 10px; margin-top: 25px; }
-        body.dark .footer-note { background: #2a3a32; }
+        .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background: #1e2b4f; color: white; padding: 8px 20px; border-radius: 50px; display: none; z-index: 1000; font-weight: bold; }
+        .lock-icon { position: fixed; bottom: 20px; left: 20px; background: #c9a03d; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; z-index: 200; box-shadow: 0 4px 12px rgba(0,0,0,0.3); color: #0a1a3a; }
+        .copy-area { background: #f0f4fc; border-radius: 44px; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        body.dark .copy-area { background: #1a2645; }
+        .footer-note { text-align: center; background: #e8eff9; border-radius: 40px; padding: 10px; margin-top: 25px; font-weight: normal; }
+        body.dark .footer-note { background: #1a2645; }
         .tab-buttons { display: flex; gap: 12px; margin-bottom: 20px; }
-        .tab-btn {
-            flex: 1; text-align: center; background: #e0e0d0; color: #1f3b2c; cursor: pointer;
-        }
-        body.dark .tab-btn { background: #3a4f44; color: #e0e0b0; }
-        .tab-btn.active { background: #2e7d5e; color: white; }
-        body.dark .tab-btn.active { background: #d4af37; color: #1e3a2f; }
-        .error-msg { color: #c0392b; font-size: 0.8rem; margin-top: 5px; }
-        .exam-question-card { background: #fffdf5; border-radius: 32px; padding: 20px; margin-bottom: 20px; border-right: 6px solid #d4af37; }
-        body.dark .exam-question-card { background: #2f4038; }
+        .tab-btn { flex: 1; text-align: center; background: #e2e8f0; color: #1e2b4f; cursor: pointer; border: none; padding: 10px; border-radius: 40px; font-weight: bold; }
+        body.dark .tab-btn { background: #2d3a5e; color: #e0e4f0; }
+        .tab-btn.active { background: #1e2b4f; color: white; }
+        body.dark .tab-btn.active { background: #c9a03d; color: #0a1a3a; }
+        .error-msg { color: #b91c1c; font-size: 0.8rem; margin-top: 5px; text-align: center; }
+        .exam-question-card { background: #ffffff; border-radius: 32px; padding: 20px; margin-bottom: 20px; border-right: 6px solid #c9a03d; }
+        body.dark .exam-question-card { background: #1e2b4f; }
         .exam-option { display: flex; align-items: center; gap: 12px; margin: 12px 0; flex-wrap: wrap; }
         .exam-option input[type="radio"] { width: 20px; margin: 0; }
-        .exam-timer { font-size: 1.5rem; text-align: center; background: #2e7d5e; color: white; padding: 8px; border-radius: 60px; margin-bottom: 20px; }
+        .exam-timer { font-size: 1.5rem; text-align: center; background: #1e2b4f; color: white; padding: 8px; border-radius: 60px; margin-bottom: 20px; }
         .exam-nav { display: flex; justify-content: space-between; margin-top: 20px; }
-        .exam-counter { text-align: center; margin-top: 15px; font-weight: bold; color: #2e7d5e; }
+        .exam-counter { text-align: center; margin-top: 15px; font-weight: bold; color: #1e2b4f; }
+        body.dark .exam-counter { color: #c9a03d; }
         .warning { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #e67e22; color: white; padding: 12px 24px; border-radius: 50px; display: none; z-index: 1000; }
         .student-list { max-height: 400px; overflow-y: auto; }
         .student-item { background: #fef7e9; border-radius: 28px; padding: 10px 15px; margin: 8px 0; display: flex; justify-content: space-between; }
+        body.dark .student-item { background: #2a3a62; }
         .image-preview { max-width: 100px; max-height: 60px; margin: 5px 0; border-radius: 12px; }
-        button:focus, .tab-btn:focus, .theme-toggle:focus { outline: none; box-shadow: none; }
+        /* گزینه بزرگ آزمون آنلاین */
+        .big-exam-btn {
+            background: linear-gradient(135deg, #1e2b4f, #c9a03d);
+            color: white;
+            text-align: center;
+            padding: 18px;
+            border-radius: 60px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+        .big-exam-btn:hover { transform: scale(1.02); background: linear-gradient(135deg, #2a3a62, #e0b84d); }
+        body.dark .big-exam-btn { background: linear-gradient(135deg, #c9a03d, #1e2b4f); color: #0a1a3a; }
     </style>
 </head>
 <body class="light">
@@ -140,8 +121,10 @@
         <div class="swiper mySwiper"><div class="swiper-wrapper" id="sliderWrapper"></div><div class="swiper-pagination"></div></div>
         <h2 id="welcomeUser">خوش آمدید</h2>
         <div id="userCategoriesGrid" class="categories-grid"></div>
+        <!-- گزینه بزرگ آزمون آنلاین زیر چهار دسته -->
+        <div id="bigExamBtn" class="big-exam-btn">📝 آزمون آنلاین 📝</div>
         <div id="userFooterNote" class="footer-note"></div>
-        <div class="flex-row" style="justify-content: center; margin-top: 15px;"><button id="onlineExamBtn" style="background:#d4af37; color:#1e3a2f;">📝 آزمون آنلاین</button><button id="logoutBtn" class="btn-danger">🚪 خروج</button></div>
+        <div class="flex-row" style="justify-content: center; margin-top: 15px;"><button id="logoutBtn" class="btn-danger">🚪 خروج</button></div>
     </div>
 
     <!-- صفحه نمایش PDFهای یک دسته (غیر از فصل به فصل) -->
@@ -157,7 +140,7 @@
     <div id="adminPage" class="page">
         <div class="top-bar"><h2>👑 پنل مدیریت</h2><button class="theme-toggle" id="themeToggleAdmin"><i class="fas fa-moon"></i> تم</button></div>
         <button id="backHomeAdmin" class="btn-secondary">🔙 خروج از مدیریت</button>
-        <div class="admin-section"><h3>📢 مدیریت اسلایدر</h3><div id="slidesList"></div><div class="flex-row"><input type="file" id="slideImageInput" accept="image/*"><input type="text" id="slideTextAlt" placeholder="متن جایگزین (اختیاری)"><button id="addImageSlideBtn">➕ افزودن اسلاید تصویری</button><button id="addTextSlideBtn">➕ افزودن اسلاید متنی</button></div></div>
+        <div class="admin-section"><h3>📢 مدیریت اسلایدر</h3><div id="slidesList"></div><div class="flex-row"><input type="file" id="slideImageInput" accept="image/*"><input type="text" id="slideTextAlt" placeholder="متن جایگزین (اختیاری)"><button id="addImageSlideBtn">➕ افزودن اسلاید تصویری</button><button id="addTextSlideBtn">➕ افزودن اسلاید متنی</button></div><small>عکس‌ها بدون حاشیه و با کلیک بزرگنمایی می‌شوند.</small></div>
         <div class="admin-section"><h3>📂 مدیریت دسته‌ها</h3><div id="catsManage"></div><div class="flex-row"><input type="text" id="newCatName" placeholder="نام دسته جدید"><button id="addCatBtn">➕ افزودن</button></div></div>
         <div class="admin-section"><h3>📤 آپلود PDF</h3><select id="adminCatSelect"></select><div id="chapterSelectForAdmin" style="display:none;"><label>فصل:</label><select id="adminChapterSelect"></select></div><input type="text" id="pdfNameInput" placeholder="نام فایل"><input type="file" id="pdfFileInput" accept="application/pdf"><button id="uploadPdfAdminBtn">ذخیره PDF</button></div>
         <div class="admin-section"><h3>🗑 حذف PDF</h3><select id="adminCatDelete"></select><div id="chapterSelectForDelete" style="display:none;"><label>فصل:</label><select id="adminChapterDelete"></select></div><div id="adminPdfList"></div></div>
@@ -173,7 +156,7 @@
             <div class="tab-buttons"><button class="tab-btn active" id="examTeacherTab">👩‍🏫 طراحی آزمون (معلم)</button><button class="tab-btn" id="examStudentTab">🎓 شرکت در آزمون (دانش‌آموز)</button></div>
             <div id="examTeacherPanel">
                 <div class="admin-section"><label>نام آزمون:</label><input type="text" id="examTitle" placeholder="مثال: ریاضی نوبت اول"><label>زمان آزمون (دقیقه):</label><input type="number" id="examTime" placeholder="مثال: 30"><label>آیا دانش‌آموزان می‌توانند به سوال قبلی بازگردند؟</label><select id="allowBack"><option value="yes">بله</option><option value="no">خیر</option></select></div>
-                <div id="examQuestionsList"></div><button id="addExamQuestionBtn" class="btn">➕ افزودن سوال جدید</button><button id="saveExamBtn" class="btn" style="background:#d4af37; color:#1e3a2f;">💾 ذخیره و دریافت لینک آزمون</button>
+                <div id="examQuestionsList"></div><button id="addExamQuestionBtn" class="btn">➕ افزودن سوال جدید</button><button id="saveExamBtn" class="btn" style="background:#c9a03d; color:#0a1a3a;">💾 ذخیره و دریافت لینک آزمون</button>
                 <div id="examLinkDiv" style="margin-top:20px; display:none; background:#e9e0c7; border-radius:32px; padding:15px; text-align:center;"><strong>لینک آزمون:</strong> <span id="examLink"></span><br><button id="copyExamLinkBtn" class="btn-secondary">📋 کپی لینک</button></div>
                 <hr><h3>📊 نتایج دانش‌آموزان</h3><select id="examSelectForResults"></select><div id="studentsResultsList"></div>
             </div>
@@ -181,21 +164,24 @@
                 <div class="admin-section"><label>لینک آزمون (ارسال شده توسط معلم):</label><input type="text" id="studentExamLink" placeholder="لینک آزمون را وارد کنید"><label>نام و نام خانوادگی:</label><input type="text" id="studentName"><label>شماره موبایل:</label><input type="tel" id="studentMobile"><label>کد ملی:</label><input type="text" id="studentNationalCode"><button id="startExamBtnStudent">شروع آزمون</button><div id="studentExamError" class="error-msg"></div></div>
             </div>
         </div>
-        <div id="examTakingPanel" style="display:none;"><div class="exam-timer" id="examTimerDisplay">زمان باقیمانده: --:--</div><div id="examTakingTitle"></div><div id="currentExamQuestion" class="exam-question-card"></div><div class="exam-nav"><button id="examPrevBtn" class="btn-secondary">⬅️ سوال قبلی</button><button id="examNextBtn" class="btn">سوال بعدی ➡️</button></div><div class="exam-counter" id="examCounter"></div><button id="submitExamBtn" class="btn" style="background:#d4af37; width:100%; margin-top:20px;">📝 پایان آزمون و تصحیح</button><div id="examWarning" class="warning">⚠️ از صفحه خارج نشوید!</div></div>
+        <div id="examTakingPanel" style="display:none;"><div class="exam-timer" id="examTimerDisplay">زمان باقیمانده: --:--</div><div id="examTakingTitle"></div><div id="currentExamQuestion" class="exam-question-card"></div><div class="exam-nav"><button id="examPrevBtn" class="btn-secondary">⬅️ سوال قبلی</button><button id="examNextBtn" class="btn">سوال بعدی ➡️</button></div><div class="exam-counter" id="examCounter"></div><button id="submitExamBtn" class="btn" style="background:#c9a03d; width:100%; margin-top:20px;">📝 پایان آزمون و تصحیح</button><div id="examWarning" class="warning">⚠️ از صفحه خارج نشوید!</div></div>
         <div id="examResultPanel" style="display:none;" class="result"></div>
     </div>
 </div>
 <div class="lock-icon" id="adminLockBtn">👑</div>
 <div id="toastMsg" class="toast"></div>
+<div id="lightbox" class="lightbox" onclick="closeLightbox()"><img id="lightboxImg" src=""></div>
 
 <script>
     (function() {
-        // ---------- توابع کمکی ----------
+        // ========== توابع کمکی ==========
         function showToast(msg) { let t = document.getElementById("toastMsg"); t.innerText = msg; t.style.display = "block"; setTimeout(() => t.style.display = "none", 2000); }
         function escapeHtml(str) { if (!str) return ""; return str.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]); }
         function setPage(pageId) { document.querySelectorAll(".page").forEach(p => p.classList.remove("active-page")); document.getElementById(pageId).classList.add("active-page"); }
+        function openLightbox(src) { let lb = document.getElementById("lightbox"); let img = document.getElementById("lightboxImg"); img.src = src; lb.style.display = "flex"; }
+        window.closeLightbox = function() { document.getElementById("lightbox").style.display = "none"; };
 
-        // ---------- تم ----------
+        // ========== تم ==========
         let currentTheme = localStorage.getItem("theme") || "light";
         function applyTheme(theme) {
             document.body.classList.remove("light", "dark");
@@ -210,7 +196,7 @@
         applyTheme(currentTheme);
         document.querySelectorAll(".theme-toggle").forEach(btn => btn.addEventListener("click", toggleTheme));
 
-        // ---------- داده‌های اولیه ----------
+        // ========== داده‌های اولیه ==========
         let DEFAULT_CATEGORIES = [
             { id: 1, title: "نمونه سوال های نوبت", order: 0, hasChapters: false },
             { id: 2, title: "نمونه سوال مستمر", order: 1, hasChapters: false },
@@ -244,24 +230,37 @@
         function getOnlineExams() { return JSON.parse(localStorage.getItem("onlineExams") || "[]"); }
         function saveOnlineExams(exams) { localStorage.setItem("onlineExams", JSON.stringify(exams)); }
 
-        // ---------- اسلایدر ----------
+        // ========== اسلایدر تصویری بدون حاشیه با لایت‌باکس ==========
         let swiperInstance = null;
         function renderSlider() {
             let slides = getSlides(); let wrapper = document.getElementById("sliderWrapper"); if (!wrapper) return;
-            wrapper.innerHTML = ""; slides.forEach(s => { let div = document.createElement("div"); div.className = "swiper-slide"; if (s.type === "image") div.innerHTML = `<img src="${s.content}" alt="تبلیغ">`; else div.innerHTML = `<i class="fas fa-star-of-life"></i> ${escapeHtml(s.content)}`; wrapper.appendChild(div); });
+            wrapper.innerHTML = "";
+            slides.forEach(s => {
+                let div = document.createElement("div"); div.className = "swiper-slide";
+                if (s.type === "image") {
+                    let img = document.createElement("img");
+                    img.src = s.content;
+                    img.alt = "تبلیغ";
+                    img.onclick = (e) => { e.stopPropagation(); openLightbox(s.content); };
+                    div.appendChild(img);
+                } else {
+                    div.innerHTML = `<div class="slide-text"><i class="fas fa-star-of-life"></i> ${escapeHtml(s.content)}</div>`;
+                }
+                wrapper.appendChild(div);
+            });
             if (swiperInstance) swiperInstance.destroy(true, true);
             swiperInstance = new Swiper('.mySwiper', { loop: true, autoplay: { delay: 3000 }, pagination: { el: '.swiper-pagination', clickable: true } });
         }
         function renderAdminSlides() {
             let slides = getSlides(); let container = document.getElementById("slidesList"); if (!container) return;
             if (slides.length === 0) { container.innerHTML = "<p>هیچ تبلیغی نیست</p>"; return; }
-            let html = ""; slides.forEach((s, idx) => { let preview = s.type === "image" ? `<img src="${s.content}" style="max-width:50px; max-height:50px; border-radius:12px;">` : `📝 ${escapeHtml(s.content.substring(0, 30))}`; html += `<div class="flex-row" style="justify-content:space-between; background:#fef0cf; border-radius:28px; padding:8px; margin-bottom:8px;"><span>${preview}</span><button class="delSlideBtn" data-index="${idx}" style="background:#c0392b;">حذف</button></div>`; });
+            let html = ""; slides.forEach((s, idx) => { let preview = s.type === "image" ? `<img src="${s.content}" style="max-width:50px; max-height:50px; border-radius:12px;">` : `📝 ${escapeHtml(s.content.substring(0, 30))}`; html += `<div class="flex-row" style="justify-content:space-between; background:#f0f4fc; border-radius:28px; padding:8px; margin-bottom:8px;"><span>${preview}</span><button class="delSlideBtn" data-index="${idx}" style="background:#b91c1c;">حذف</button></div>`; });
             container.innerHTML = html; document.querySelectorAll(".delSlideBtn").forEach(btn => { btn.onclick = () => { let idx = parseInt(btn.dataset.index); let newSlides = getSlides(); newSlides.splice(idx,1); saveSlides(newSlides); renderAdminSlides(); renderSlider(); showToast("اسلاید حذف شد"); }; });
         }
         function addImageSlide() { let fileInput = document.getElementById("slideImageInput"); let file = fileInput.files[0]; if (!file) { showToast("لطفاً یک عکس انتخاب کنید"); return; } let reader = new FileReader(); reader.onload = function(e) { let base64 = e.target.result; let slides = getSlides(); slides.push({ type: "image", content: base64 }); saveSlides(slides); fileInput.value = ""; renderAdminSlides(); renderSlider(); showToast("اسلاید تصویری اضافه شد"); }; reader.readAsDataURL(file); }
         function addTextSlide() { let text = document.getElementById("slideTextAlt").value.trim(); if (!text) { showToast("متن تبلیغ را وارد کنید"); return; } let slides = getSlides(); slides.push({ type: "text", content: text }); saveSlides(slides); document.getElementById("slideTextAlt").value = ""; renderAdminSlides(); renderSlider(); showToast("اسلاید متنی اضافه شد"); }
 
-        // ---------- احراز هویت ----------
+        // ========== احراز هویت ==========
         let regTempCode = null, regTempData = null, resetCodeStore = null, resetMobileStore = null;
         function showTab(tab) {
             document.getElementById("loginForm").style.display = (tab === 'login') ? 'block' : 'none';
@@ -292,8 +291,9 @@
         document.getElementById("backToCategories").onclick = () => setPage("userHomePage");
         document.getElementById("backToChapterSelect").onclick = () => { setPage("chapterSelectPage"); renderChapterSelect(currentCategoryId, currentCategoryTitle); };
         document.getElementById("backFromExamPortal").onclick = () => setPage("userHomePage");
+        document.getElementById("bigExamBtn").onclick = () => openOnlineExamPortal();
 
-        // ---------- نمایش دسته‌ها و PDFها ----------
+        // ========== نمایش دسته‌ها و PDFها ==========
         let currentCategoryId = null, currentCategoryTitle = null, currentChapterId = null, currentChapterCatId = null;
         function renderUserHome() {
             let user = JSON.parse(localStorage.getItem("currentNormalUser")); if (!user) return;
@@ -339,12 +339,12 @@
             setPage("userCategoryPage");
         }
 
-        // ---------- مدیریت ادمین ----------
+        // ========== مدیریت ادمین ==========
         let adminAuthenticated = false;
         function loadAdminPanel() { if (!adminAuthenticated) return; renderManageCategories(); refreshAdminSelects(); renderAdminPdfList(); renderAdminSlides(); document.getElementById("footerTextAdmin").value = localStorage.getItem("footerText") || ""; document.getElementById("copyTextAdmin").value = localStorage.getItem("copyText") || ""; document.getElementById("appTitleInput").value = getAppTitle(); renderUsersList(); }
         function renderManageCategories() {
             let cats = getCategories(); cats.sort((a, b) => a.order - b.order); let html = "";
-            cats.forEach(cat => { html += `<div class="flex-row" style="margin-bottom:12px;"><input type="text" id="catName_${cat.id}" value="${escapeHtml(cat.title)}" style="flex:2;"><button class="saveCat" data-id="${cat.id}">ذخیره</button><button class="upCat" data-id="${cat.id}">⬆️</button><button class="downCat" data-id="${cat.id}">⬇️</button><button class="delCat" data-id="${cat.id}" style="background:#c0392b;">حذف</button></div>`; });
+            cats.forEach(cat => { html += `<div class="flex-row" style="margin-bottom:12px;"><input type="text" id="catName_${cat.id}" value="${escapeHtml(cat.title)}" style="flex:2;"><button class="saveCat" data-id="${cat.id}">ذخیره</button><button class="upCat" data-id="${cat.id}">⬆️</button><button class="downCat" data-id="${cat.id}">⬇️</button><button class="delCat" data-id="${cat.id}" style="background:#b91c1c;">حذف</button></div>`; });
             document.getElementById("catsManage").innerHTML = html;
             document.querySelectorAll(".saveCat").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); let newName = document.getElementById(`catName_${id}`).value.trim(); if (newName) { let cats = getCategories(); let c = cats.find(c => c.id === id); if (c) c.title = newName; saveCategories(cats); renderManageCategories(); renderUserHome(); refreshAdminSelects(); } });
             document.querySelectorAll(".upCat").forEach(btn => btn.onclick = () => moveCat(parseInt(btn.dataset.id), -1));
@@ -361,7 +361,7 @@
         }
         function renderAdminPdfList() {
             let catId = parseInt(document.getElementById("adminCatDelete").value); if (isNaN(catId)) return; let chapter = null; let cat = getCategories().find(c => c.id === catId); if (cat && cat.hasChapters) { let selChap = document.getElementById("adminChapterDelete"); if (selChap) chapter = parseInt(selChap.value); if (!chapter) { document.getElementById("adminPdfList").innerHTML = "<p>لطفاً فصل را انتخاب کنید</p>"; return; } }
-            let pdfs = getPdfs().filter(p => p.categoryId === catId && ((chapter !== null) ? (p.chapter === chapter) : (!p.chapter))); let container = document.getElementById("adminPdfList"); if (pdfs.length === 0) { container.innerHTML = "<p>بدون فایل</p>"; return; } let html = ""; pdfs.forEach(p => { html += `<div class="flex-row" style="justify-content:space-between; background:#fff0cf; margin:6px 0; padding:6px 12px; border-radius:28px;"><span>${escapeHtml(p.name)}</span><button class="delPdfAdmin" data-id="${p.id}" style="background:#c0392b;">حذف</button></div>`; }); container.innerHTML = html; document.querySelectorAll(".delPdfAdmin").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); let newPdfs = getPdfs().filter(p => p.id !== id); savePdfs(newPdfs); renderAdminPdfList(); renderUserHome(); showToast("حذف شد"); });
+            let pdfs = getPdfs().filter(p => p.categoryId === catId && ((chapter !== null) ? (p.chapter === chapter) : (!p.chapter))); let container = document.getElementById("adminPdfList"); if (pdfs.length === 0) { container.innerHTML = "<p>بدون فایل</p>"; return; } let html = ""; pdfs.forEach(p => { html += `<div class="flex-row" style="justify-content:space-between; background:#f0f4fc; margin:6px 0; padding:6px 12px; border-radius:28px;"><span>${escapeHtml(p.name)}</span><button class="delPdfAdmin" data-id="${p.id}" style="background:#b91c1c;">حذف</button></div>`; }); container.innerHTML = html; document.querySelectorAll(".delPdfAdmin").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); let newPdfs = getPdfs().filter(p => p.id !== id); savePdfs(newPdfs); renderAdminPdfList(); renderUserHome(); showToast("حذف شد"); });
         }
         function uploadPdfAdmin() {
             let file = document.getElementById("pdfFileInput").files[0]; if (!file) { showToast("فایل را انتخاب کنید"); return; } if (file.type !== "application/pdf") { showToast("فایل PDF نیست"); return; }
@@ -371,7 +371,7 @@
         function saveAdminSettings() { let newTitle = document.getElementById("appTitleInput").value.trim(); if (newTitle) setAppTitle(newTitle); localStorage.setItem("footerText", document.getElementById("footerTextAdmin").value); localStorage.setItem("copyText", document.getElementById("copyTextAdmin").value); renderUserHome(); updateMainTitles(); showToast("تنظیمات ذخیره شد"); }
         function renderUsersList() { let users = getUsers(); let container = document.getElementById("usersList"); if (users.length === 0) { container.innerHTML = "<p>کاربری ثبت نام نکرده</p>"; return; } let html = "<ul>"; users.forEach(u => { html += `<li>${escapeHtml(u.fullName)} (${u.username}) - ${u.mobile}</li>`; }); html += "</ul>"; container.innerHTML = html; }
 
-        // ---------- آزمون آنلاین ----------
+        // ========== آزمون آنلاین ==========
         let currentExamEditing = null; let currentStudentExam = null, studentAnswers = [], examTimerInterval = null, timeLeft = 0, currentQIndex = 0;
         function renderExamQuestionForms() {
             let container = document.getElementById("examQuestionsList"); if (!container) return;
@@ -379,7 +379,7 @@
             container.innerHTML = "";
             currentExamEditing.questions.forEach((q, idx) => {
                 let div = document.createElement("div"); div.className = "exam-question-card";
-                div.innerHTML = `<h4>سوال ${idx+1}</h4><input type="text" placeholder="متن سوال" value="${escapeHtml(q.text)}" class="examQtext" data-idx="${idx}"><div><label>تصویر سوال (اختیاری):</label><input type="file" accept="image/*" class="examQImage" data-idx="${idx}">${q.image ? `<img src="${q.image}" class="image-preview">` : ""}</div><div class="examOptsContainer" data-idx="${idx}"></div><div class="flex-row"><label>گزینه صحیح (0 تا 3):</label><input type="number" min="0" max="3" value="${q.correctIndex}" class="examCorrect" data-idx="${idx}" style="width:80px;"><button class="removeExamQuestion" data-idx="${idx}" style="background:#c0392b;">حذف سوال</button></div>`;
+                div.innerHTML = `<h4>سوال ${idx+1}</h4><input type="text" placeholder="متن سوال" value="${escapeHtml(q.text)}" class="examQtext" data-idx="${idx}"><div><label>تصویر سوال (اختیاری):</label><input type="file" accept="image/*" class="examQImage" data-idx="${idx}">${q.image ? `<img src="${q.image}" class="image-preview">` : ""}</div><div class="examOptsContainer" data-idx="${idx}"></div><div class="flex-row"><label>گزینه صحیح (0 تا 3):</label><input type="number" min="0" max="3" value="${q.correctIndex}" class="examCorrect" data-idx="${idx}" style="width:80px;"><button class="removeExamQuestion" data-idx="${idx}" style="background:#b91c1c;">حذف سوال</button></div>`;
                 container.appendChild(div);
                 let optsDiv = div.querySelector(".examOptsContainer");
                 for (let i = 0; i < 4; i++) {
@@ -425,12 +425,12 @@
         function showStudentExamQuestion(idx) {
             let q = currentStudentExam.questions[idx]; let container = document.getElementById("currentExamQuestion"); if (!container) return;
             let html = `<h3>سوال ${idx+1}: ${escapeHtml(q.text)}</h3>`;
-            if (q.image) html += `<img src="${q.image}" style="max-width:100%; max-height:150px; border-radius:16px; margin:10px 0;">`;
+            if (q.image) html += `<img src="${q.image}" style="max-width:100%; max-height:150px; border-radius:16px; margin:10px 0;" onclick="openLightbox('${q.image}')">`;
             html += `<div class="exam-options-container">`;
             for (let i = 0; i < 4; i++) {
                 let opt = q.options[i]; let isChecked = (studentAnswers[idx] === i);
                 html += `<div class="exam-option"><input type="radio" name="examChoice" value="${i}" ${isChecked ? 'checked' : ''}> <span>${escapeHtml(opt.text || '')}</span>`;
-                if (opt.image) html += `<img src="${opt.image}" style="max-width:80px; max-height:60px; border-radius:12px; margin-right:8px;">`;
+                if (opt.image) html += `<img src="${opt.image}" style="max-width:80px; max-height:60px; border-radius:12px; margin-right:8px;" onclick="openLightbox('${opt.image}')">`;
                 html += `</div>`;
             }
             html += `</div>`;
@@ -469,7 +469,7 @@
         document.getElementById("examPrevBtn")?.addEventListener("click", () => { if (currentStudentExam?.allowBack && currentQIndex > 0) { currentQIndex--; showStudentExamQuestion(currentQIndex); } });
         document.getElementById("submitExamBtn")?.addEventListener("click", () => { if (confirm('آیا از پایان آزمون مطمئن هستید؟')) finishStudentExam(); });
 
-        // ---------- رویدادهای ادمین ----------
+        // ========== رویدادهای ادمین ==========
         document.getElementById("adminLockBtn").onclick = () => { let pwd = prompt("رمز مدیریت:"); if (pwd === "admin123") { adminAuthenticated = true; loadAdminPanel(); setPage("adminPage"); } else showToast("رمز اشتباه"); };
         document.getElementById("backHomeAdmin").onclick = () => { adminAuthenticated = false; let normal = localStorage.getItem("currentNormalUser"); if (normal) { renderUserHome(); setPage("userHomePage"); } else { setPage("loginPage"); showTab('login'); } };
         document.getElementById("addCatBtn").onclick = addCategoryAdmin;
