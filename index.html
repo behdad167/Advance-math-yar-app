@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ریاضی‌یار | نسخه نهایی بدون باگ</title>
+    <title>ریاضی‌یار | نسخه نهایی حرفه‌ای</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
@@ -21,7 +21,7 @@
             padding: 20px;
             background-attachment: fixed;
         }
-        /* تم روشن (طلایی-یاسی) */
+        /* ========== تم روشن (طلایی-یاسی با گرادینت مورب برای کارت‌ها) ========== */
         body.light {
             background: linear-gradient(135deg, #fdeacb 0%, #d4e0f0 100%);
             color: #2c3e2f;
@@ -33,7 +33,15 @@
             border: 1px solid rgba(255, 215, 150, 0.6);
             box-shadow: 0 25px 45px rgba(0, 0, 0, 0.08);
         }
-        body.light .cat-card, body.light .admin-section, body.light .copy-area, body.light .footer-note {
+        body.light .cat-card {
+            background: linear-gradient(135deg, #fae6c3, #c9deff);
+            border: 1px solid #ffd58c;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+        body.light .cat-card:hover {
+            background: linear-gradient(135deg, #fcefcb, #d8e8ff);
+        }
+        body.light .admin-section, body.light .copy-area, body.light .footer-note {
             background: rgba(255, 252, 240, 0.75);
             backdrop-filter: blur(4px);
             border: 1px solid #ffd58c;
@@ -49,7 +57,7 @@
             background-clip: text;
             color: transparent;
         }
-        /* تم تاریک (آبی-بنفش عمیق) */
+        /* ========== تم تاریک (بنفش-آبی با گرادینت مورب برای کارت‌ها) ========== */
         body.dark {
             background: linear-gradient(135deg, #0a0f2a 0%, #1a1a3a 100%);
             color: #e0e4f0;
@@ -61,7 +69,14 @@
             border: 1px solid rgba(212, 175, 55, 0.4);
             box-shadow: 0 25px 45px rgba(0, 0, 0, 0.5);
         }
-        body.dark .cat-card, body.dark .admin-section, body.dark .copy-area, body.dark .footer-note {
+        body.dark .cat-card {
+            background: linear-gradient(135deg, #2a2a6e, #1a2a4a);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        body.dark .cat-card:hover {
+            background: linear-gradient(135deg, #3a3a8e, #2a3a5a);
+        }
+        body.dark .admin-section, body.dark .copy-area, body.dark .footer-note {
             background: rgba(20, 25, 55, 0.7);
             border: 1px solid rgba(212, 175, 55, 0.3);
         }
@@ -83,8 +98,15 @@
         }
         .page { display: none; animation: fade 0.2s; }
         .active-page { display: block; }
-        @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px; }
+        @keyframes fade { from { opacity: 0; transform: translateY(5px);} to { opacity: 1; transform: translateY(0);} }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
         .theme-toggle {
             border-radius: 40px;
             padding: 8px 16px;
@@ -120,8 +142,11 @@
         .btn-secondary { background: rgba(200, 180, 140, 0.7); color: #3e2a1a; }
         body.dark .btn-secondary { background: rgba(60, 70, 110, 0.7); color: #ddd; }
         .categories-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin: 25px 0; }
-        .cat-card { border-radius: 36px; padding: 20px 8px; text-align: center; cursor: pointer; transition: 0.25s; }
-        .cat-card:hover { transform: translateY(-5px); }
+        .cat-card {
+            border-radius: 36px; padding: 20px 8px; text-align: center; cursor: pointer;
+            transition: 0.25s; box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .cat-card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.15); }
         .cat-icon { font-size: 3rem; margin-bottom: 10px; }
         .cat-title { font-weight: 800; font-size: 1.1rem; }
         .pdf-count { font-size: 0.7rem; display: inline-block; padding: 3px 12px; border-radius: 30px; margin-top: 8px; font-weight: bold; }
@@ -130,12 +155,53 @@
         .pdf-item { border-radius: 28px; padding: 12px 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; border-right: 5px solid #c9a03d; }
         body.light .pdf-item { background: rgba(255, 252, 245, 0.8); }
         body.dark .pdf-item { background: rgba(20, 25, 55, 0.8); }
+        /* اسلایدر بدون حاشیه */
         .swiper { width: 100%; border-radius: 32px; margin: 20px 0; background: transparent; }
         .swiper-slide { border-radius: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         .swiper-slide img { width: 100%; max-height: 220px; object-fit: contain; border-radius: 32px; }
         .swiper-slide .slide-text { padding: 28px 20px; font-weight: bold; font-size: 1.1rem; border-radius: 32px; width: 100%; text-align: center; }
         body.light .swiper-slide .slide-text { background: rgba(255,245,220,0.8); color: #5a3a1a; }
         body.dark .swiper-slide .slide-text { background: rgba(30,35,75,0.8); color: #f5e6b0; border: 1px solid #c9a03d; }
+        /* دکمه آزمون آنلاین با پس‌زمینه متحرک */
+        .big-exam-btn {
+            text-align: center;
+            padding: 18px;
+            border-radius: 60px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin: 20px 0 10px;
+            cursor: pointer;
+            transition: 0.2s;
+            background-size: 200% 200%;
+            animation: gradientMove 3s ease infinite;
+        }
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        body.light .big-exam-btn {
+            background: linear-gradient(135deg, #f5c542, #e0a82b, #b06f1c);
+            color: #2a1a0a;
+        }
+        body.dark .big-exam-btn {
+            background: linear-gradient(135deg, #c9a03d, #8b5a2b, #3a2a1a);
+            color: #f0e6c0;
+        }
+        .big-exam-btn:hover { transform: scale(1.02); box-shadow: 0 0 20px gold; }
+        /* مرکز کردن متن خوش‌آمدگویی */
+        .welcome-container {
+            text-align: center;
+            margin: 15px 0 5px;
+        }
+        #welcomeUser {
+            display: inline-block;
+            background: rgba(0,0,0,0.1);
+            backdrop-filter: blur(4px);
+            padding: 8px 24px;
+            border-radius: 60px;
+            font-size: 1.3rem;
+        }
         .chapter-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
         .chapter-card { text-align: center; padding: 12px; border-radius: 32px; cursor: pointer; font-weight: bold; transition: 0.2s; }
         body.light .chapter-card { background: #f0f4fc; }
@@ -147,10 +213,6 @@
         .lock-icon { position: fixed; bottom: 20px; left: 20px; width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; cursor: pointer; z-index: 200; box-shadow: 0 4px 15px rgba(0,0,0,0.3); background: #c9a03d; color: #0a1a3a; }
         .copy-area { border-radius: 44px; padding: 8px 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .footer-note { text-align: center; border-radius: 40px; padding: 10px; margin-top: 25px; }
-        .big-exam-btn { text-align: center; padding: 18px; border-radius: 60px; font-size: 1.4rem; font-weight: bold; margin: 20px 0 10px; cursor: pointer; transition: 0.2s; background-size: 200% 200%; }
-        body.light .big-exam-btn { background: linear-gradient(135deg, #f5c542, #e0a82b); color: #2a1a0a; }
-        body.dark .big-exam-btn { background: linear-gradient(135deg, #c9a03d, #8b5a2b); color: #f0e6c0; }
-        .big-exam-btn:hover { transform: scale(1.02); box-shadow: 0 0 15px gold; }
         .error-msg { color: #c0392b; font-size: 0.8rem; margin-top: 5px; text-align: center; }
         .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; cursor: pointer; }
         .lightbox img { max-width: 90%; max-height: 90%; border-radius: 24px; box-shadow: 0 0 40px gold; }
@@ -185,7 +247,7 @@
         <div class="top-bar"><h1 id="userDynamicTitle">✨ ریاضی‌یار کیهانی</h1><button class="theme-toggle" id="themeToggleBtn2"><i class="fas fa-moon"></i> تم تاریک</button></div>
         <div class="copy-area"><span id="copyableTextUser">🏆 مسابقات ریاضی نور | ویژه دانش‌آموزان تیزهوش 🏆</span><button id="copyUserTextBtn" style="width:auto;">📋 کپی</button></div>
         <div class="swiper mySwiper"><div class="swiper-wrapper" id="sliderWrapper"></div><div class="swiper-pagination"></div></div>
-        <h2 id="welcomeUser">خوش آمدید</h2>
+        <div class="welcome-container"><h2 id="welcomeUser">خوش آمدید</h2></div>
         <div id="userCategoriesGrid" class="categories-grid"></div>
         <div id="bigExamBtn" class="big-exam-btn">📝 آزمون آنلاین 📝</div>
         <div id="userFooterNote" class="footer-note"></div>
@@ -239,7 +301,25 @@
 
 <script>
     (function() {
-        // ----- helpers -----
+        // ========== مدیریت دکمه برگشت گوشی (جلوگیری از خروج) ==========
+        window.history.pushState({ page: "main" }, "", window.location.href);
+        window.addEventListener("popstate", function(event) {
+            // جلوگیری از خروج از برنامه: فقط بین صفحات اپلیکیشن جابجا شو
+            if (event.state && event.state.page === "main") {
+                // اگر در صفحه اصلی هستیم، اجازه خروج ندهیم و دوباره pushState کنیم
+                window.history.pushState({ page: "main" }, "", window.location.href);
+                // می‌توانیم پیام Toast نمایش دهیم
+                showToast("برای خروج از برنامه، دکمه خروج را بزنید");
+            } else {
+                // اگر در صفحات داخلی هستیم، اجازه بده به صفحه قبل برگردد اما خروج نده
+                // برای جلوگیری از خروج کامل، دوباره pushState می‌کنیم
+                window.history.pushState({ page: "main" }, "", window.location.href);
+            }
+        });
+        // اولین pushState
+        window.history.pushState({ page: "main" }, "", window.location.href);
+
+        // ========== توابع کمکی ==========
         function showToast(msg) {
             let t = document.getElementById("toastMsg");
             t.innerText = msg;
@@ -262,7 +342,7 @@
         }
         window.closeLightbox = function() { document.getElementById("lightbox").style.display = "none"; };
 
-        // ----- theme -----
+        // ========== تم ==========
         let currentTheme = localStorage.getItem("theme") || "light";
         function applyTheme(theme) {
             document.body.classList.remove("light", "dark");
@@ -279,7 +359,7 @@
         applyTheme(currentTheme);
         document.querySelectorAll(".theme-toggle").forEach(btn => btn.addEventListener("click", toggleTheme));
 
-        // ----- data init -----
+        // ========== داده‌های اولیه ==========
         let DEFAULT_CATEGORIES = [
             { id: 1, title: "نمونه سوال های نوبت", order: 0, hasChapters: false },
             { id: 2, title: "نمونه سوال مستمر", order: 1, hasChapters: false },
@@ -313,7 +393,7 @@
         function getOnlineExams() { return JSON.parse(localStorage.getItem("onlineExams") || "[]"); }
         function saveOnlineExams(exams) { localStorage.setItem("onlineExams", JSON.stringify(exams)); }
 
-        // ----- slider -----
+        // ========== اسلایدر ==========
         let swiperInstance = null;
         function renderSlider() {
             let slides = getSlides(); let wrapper = document.getElementById("sliderWrapper"); if (!wrapper) return;
@@ -384,7 +464,7 @@
             showToast("اسلاید متنی اضافه شد");
         }
 
-        // ----- authentication (register / login / forgot) -----
+        // ========== احراز هویت ==========
         let regTempCode = null, regTempData = null, resetCodeStore = null, resetMobileStore = null;
         function showTab(tab) {
             document.getElementById("loginForm").style.display = (tab === 'login') ? 'block' : 'none';
@@ -487,7 +567,7 @@
         document.getElementById("backFromExamPortal").onclick = () => setPage("userHomePage");
         document.getElementById("bigExamBtn").onclick = () => openOnlineExamPortal();
 
-        // ----- user categories & pdfs -----
+        // ========== نمایش دسته‌ها و PDFها ==========
         let currentCategoryId = null, currentCategoryTitle = null, currentChapterId = null, currentChapterCatId = null;
         function renderUserHome() {
             let user = JSON.parse(localStorage.getItem("currentNormalUser"));
@@ -601,7 +681,7 @@
             setPage("userCategoryPage");
         }
 
-        // ----- admin panel (categories, pdfs) -----
+        // ========== مدیریت ادمین ==========
         let adminAuthenticated = false;
         function loadAdminPanel() {
             if (!adminAuthenticated) return;
@@ -802,7 +882,7 @@
             container.innerHTML = html;
         }
 
-        // ----- online exam (full featured) -----
+        // ========== آزمون آنلاین (کامل) ==========
         let currentExamEditing = null;
         let currentStudentExam = null, studentAnswers = [], examTimerInterval = null, timeLeft = 0, currentQIndex = 0;
         function renderExamQuestionForms() {
@@ -821,6 +901,7 @@
                     optsDiv.appendChild(optDiv);
                 }
             });
+            // attach events (به دلیل طول کد، مشابه قبل)
             document.querySelectorAll(".examQtext").forEach(inp => inp.addEventListener("change", function() { let idx = parseInt(this.dataset.idx); currentExamEditing.questions[idx].text = this.value; }));
             document.querySelectorAll(".examQImage").forEach(inp => inp.addEventListener("change", function() { let idx = parseInt(this.dataset.idx); let file = this.files[0]; if (file) { let reader = new FileReader(); reader.onload = e => { currentExamEditing.questions[idx].image = e.target.result; renderExamQuestionForms(); }; reader.readAsDataURL(file); } }));
             document.querySelectorAll(".examOptText").forEach(inp => inp.addEventListener("change", function() { let idx = parseInt(this.dataset.idx); let optidx = parseInt(this.dataset.optidx); if (!currentExamEditing.questions[idx].options) currentExamEditing.questions[idx].options = [{}, {}, {}, {}]; currentExamEditing.questions[idx].options[optidx].text = this.value; }));
@@ -1026,7 +1107,7 @@
             if (confirm('آیا از پایان آزمون مطمئن هستید؟')) finishStudentExam();
         });
 
-        // ----- admin events -----
+        // ========== رویدادهای ادمین ==========
         document.getElementById("adminLockBtn").onclick = () => {
             let pwd = prompt("رمز مدیریت:");
             if (pwd === "admin123") {
@@ -1052,7 +1133,7 @@
         document.getElementById("addImageSlideBtn").onclick = addImageSlide;
         document.getElementById("addTextSlideBtn").onclick = addTextSlide;
 
-        // ----- initial run -----
+        // ========== شروع برنامه ==========
         initData();
         updateMainTitles();
         if (localStorage.getItem("currentNormalUser")) {
