@@ -9,11 +9,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
             min-height: 100vh;
@@ -320,7 +316,6 @@
         window.history.pushState({ page: "main" }, "", window.location.href);
         showToast("برای خروج از برنامه، دکمه خروج را بزنید");
     });
-    window.history.pushState({ page: "main" }, "", window.location.href);
 
     // ======================== توابع کمکی ========================
     function showToast(msg) {
@@ -343,411 +338,415 @@
         img.src = src;
         lb.style.display = "flex";
     }
-    window.closeLightbox = function() { document.getElementById("lightbox").style.display = "none"; };// ======================== تم (سریع) ========================
-let currentTheme = localStorage.getItem("theme") || "light";
-function applyTheme(theme) {
-    document.body.classList.remove("light", "dark");
-    document.body.classList.add(theme);
-    localStorage.setItem("theme", theme);
-    currentTheme = theme;
-    let toggleText = theme === "light" ? "تم تاریک" : "تم روشن";
-    let icon = theme === "light" ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
-    document.querySelectorAll(".theme-toggle").forEach(btn => {
-        if (btn) btn.innerHTML = icon + " " + toggleText;
-    });
-}
-function toggleTheme() { applyTheme(currentTheme === "light" ? "dark" : "light"); }
-applyTheme(currentTheme);
-document.querySelectorAll(".theme-toggle").forEach(btn => btn.addEventListener("click", toggleTheme));
+    window.closeLightbox = function() { document.getElementById("lightbox").style.display = "none"; };
 
-// ======================== داده‌های اولیه ========================
-let DEFAULT_CATEGORIES = [
-    { id: 1, title: "نمونه سوال های نوبت", order: 0, hasChapters: false },
-    { id: 2, title: "نمونه سوال مستمر", order: 1, hasChapters: false },
-    { id: 3, title: "نمونه سوال فصل به فصل", order: 2, hasChapters: true },
-    { id: 4, title: "سوال های شخصی", order: 3, hasChapters: false }
-];
-const CAT_ICONS = ["🧮", "📊", "🧩", "🎯", "🧠", "✨", "🚀", "🎲", "💡"];
-function getCatIcon(index) { return CAT_ICONS[index % CAT_ICONS.length]; }
+    // ======================== تم ========================
+    let currentTheme = localStorage.getItem("theme") || "light";
+    function applyTheme(theme) {
+        document.body.classList.remove("light", "dark");
+        document.body.classList.add(theme);
+        localStorage.setItem("theme", theme);
+        currentTheme = theme;
+        let toggleText = theme === "light" ? "تم تاریک" : "تم روشن";
+        let icon = theme === "light" ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+        document.querySelectorAll(".theme-toggle").forEach(btn => {
+            if (btn) btn.innerHTML = icon + " " + toggleText;
+        });
+    }
+    function toggleTheme() { applyTheme(currentTheme === "light" ? "dark" : "light"); }
+    applyTheme(currentTheme);
+    document.querySelectorAll(".theme-toggle").forEach(btn => btn.addEventListener("click", toggleTheme));
 
-function initData() {
-    if (!localStorage.getItem("categories")) localStorage.setItem("categories", JSON.stringify(DEFAULT_CATEGORIES));
-    if (!localStorage.getItem("pdfs")) localStorage.setItem("pdfs", JSON.stringify([]));
-    if (!localStorage.getItem("footerText")) localStorage.setItem("footerText", "🏆 مسابقات ریاضی نور | ویژه نوروز ۱۴۰۴ 🏆");
-    if (!localStorage.getItem("copyText")) localStorage.setItem("copyText", "🏆 مسابقات ریاضی نور | ویژه دانش‌آموزان تیزهوش 🏆");
-    if (!localStorage.getItem("users")) localStorage.setItem("users", JSON.stringify([]));
-    if (!localStorage.getItem("slides")) localStorage.setItem("slides", JSON.stringify([{ type: "text", content: "📢 جشنواره بزرگ ریاضی | تخفیف ۵۰٪" }, { type: "text", content: "🎯 مسابقه حل سوال | جوایز نقدی" }]));
-    if (!localStorage.getItem("appTitle")) localStorage.setItem("appTitle", "📐 ریاضی‌یار");
-    if (!localStorage.getItem("onlineExams")) localStorage.setItem("onlineExams", JSON.stringify([]));
-}
-function getCategories() { return JSON.parse(localStorage.getItem("categories")); }
-function saveCategories(cats) { localStorage.setItem("categories", JSON.stringify(cats)); }
-function getPdfs() { return JSON.parse(localStorage.getItem("pdfs")); }
-function savePdfs(pdfs) { localStorage.setItem("pdfs", JSON.stringify(pdfs)); }
-function getUsers() { return JSON.parse(localStorage.getItem("users")); }
-function saveUsers(users) { localStorage.setItem("users", JSON.stringify(users)); }
-function getSlides() { return JSON.parse(localStorage.getItem("slides")); }
-function saveSlides(slides) { localStorage.setItem("slides", JSON.stringify(slides)); }
-function getAppTitle() { return localStorage.getItem("appTitle") || "📐 ریاضی‌یار"; }
-function setAppTitle(title) { localStorage.setItem("appTitle", title); updateMainTitles(); }
-function updateMainTitles() { let t = getAppTitle(); document.getElementById("dynamicAppTitle").innerHTML = t; document.getElementById("userDynamicTitle").innerHTML = t; }
-function getOnlineExams() { return JSON.parse(localStorage.getItem("onlineExams") || "[]"); }
-function saveOnlineExams(exams) { localStorage.setItem("onlineExams", JSON.stringify(exams)); }
+    // ======================== داده‌های اولیه (همگام بین همه دستگاه‌ها) ========================
+    let DEFAULT_CATEGORIES = [
+        { id: 1, title: "نمونه سوال های نوبت", order: 0, hasChapters: false },
+        { id: 2, title: "نمونه سوال مستمر", order: 1, hasChapters: false },
+        { id: 3, title: "نمونه سوال فصل به فصل", order: 2, hasChapters: true },
+        { id: 4, title: "سوال های شخصی", order: 3, hasChapters: false }
+    ];
+    const CAT_ICONS = ["🧮", "📊", "🧩", "🎯", "🧠", "✨", "🚀", "🎲", "💡"];
+    function getCatIcon(index) { return CAT_ICONS[index % CAT_ICONS.length]; }
 
-// ======================== اسلایدر ========================
-let swiperInstance = null;
-function renderSlider() {
-    let slides = getSlides(); let wrapper = document.getElementById("sliderWrapper"); if (!wrapper) return;
-    wrapper.innerHTML = "";
-    slides.forEach(s => {
-        let div = document.createElement("div"); div.className = "swiper-slide";
-        if (s.type === "image") {
-            let img = document.createElement("img");
-            img.src = s.content;
-            img.alt = "تبلیغ";
-            img.onclick = (e) => { e.stopPropagation(); openLightbox(s.content); };
-            div.appendChild(img);
-        } else {
-            div.innerHTML = `<div class="slide-text"><i class="fas fa-star-of-life"></i> ${escapeHtml(s.content)}</div>`;
-        }
-        wrapper.appendChild(div);
-    });
-    if (swiperInstance) swiperInstance.destroy(true, true);
-    swiperInstance = new Swiper('.mySwiper', { loop: true, autoplay: { delay: 3000 }, pagination: { el: '.swiper-pagination', clickable: true } });
-}
-function renderAdminSlides() {
-    let slides = getSlides(); let container = document.getElementById("slidesList"); if (!container) return;
-    if (slides.length === 0) { container.innerHTML = "<p>هیچ تبلیغی نیست</p>"; return; }
-    let html = "";
-    slides.forEach((s, idx) => {
-        let preview = s.type === "image" ? `<img src="${s.content}" style="max-width:50px; max-height:50px; border-radius:12px;">` : `📝 ${escapeHtml(s.content.substring(0, 30))}`;
-        html += `<div class="flex-row" style="justify-content:space-between; border-radius:28px; padding:8px; margin-bottom:8px;"><span>${preview}</span><button class="delSlideBtn" data-index="${idx}" style="background:#b91c1c;">حذف</button></div>`;
-    });
-    container.innerHTML = html;
-    document.querySelectorAll(".delSlideBtn").forEach(btn => {
-        btn.onclick = () => {
-            let idx = parseInt(btn.dataset.index);
-            let newSlides = getSlides();
-            newSlides.splice(idx, 1);
-            saveSlides(newSlides);
+    function initData() {
+        if (!localStorage.getItem("categories")) localStorage.setItem("categories", JSON.stringify(DEFAULT_CATEGORIES));
+        if (!localStorage.getItem("pdfs")) localStorage.setItem("pdfs", JSON.stringify([]));
+        if (!localStorage.getItem("footerText")) localStorage.setItem("footerText", "🏆 مسابقات ریاضی نور | ویژه نوروز ۱۴۰۴ 🏆");
+        if (!localStorage.getItem("copyText")) localStorage.setItem("copyText", "🏆 مسابقات ریاضی نور | ویژه دانش‌آموزان تیزهوش 🏆");
+        if (!localStorage.getItem("users")) localStorage.setItem("users", JSON.stringify([]));
+        if (!localStorage.getItem("slides")) localStorage.setItem("slides", JSON.stringify([{ type: "text", content: "📢 جشنواره بزرگ ریاضی | تخفیف ۵۰٪" }, { type: "text", content: "🎯 مسابقه حل سوال | جوایز نقدی" }]));
+        if (!localStorage.getItem("appTitle")) localStorage.setItem("appTitle", "📐 ریاضی‌یار");
+        if (!localStorage.getItem("onlineExams")) localStorage.setItem("onlineExams", JSON.stringify([]));
+    }
+    function getCategories() { return JSON.parse(localStorage.getItem("categories")); }
+    function saveCategories(cats) { localStorage.setItem("categories", JSON.stringify(cats)); }
+    function getPdfs() { return JSON.parse(localStorage.getItem("pdfs")); }
+    function savePdfs(pdfs) { localStorage.setItem("pdfs", JSON.stringify(pdfs)); }
+    function getUsers() { return JSON.parse(localStorage.getItem("users")); }
+    function saveUsers(users) { localStorage.setItem("users", JSON.stringify(users)); }
+    function getSlides() { return JSON.parse(localStorage.getItem("slides")); }
+    function saveSlides(slides) { localStorage.setItem("slides", JSON.stringify(slides)); }
+    function getAppTitle() { return localStorage.getItem("appTitle") || "📐 ریاضی‌یار"; }
+    function setAppTitle(title) { localStorage.setItem("appTitle", title); updateMainTitles(); }
+    function updateMainTitles() { let t = getAppTitle(); document.getElementById("dynamicAppTitle").innerHTML = t; document.getElementById("userDynamicTitle").innerHTML = t; }
+    function getOnlineExams() { return JSON.parse(localStorage.getItem("onlineExams") || "[]"); }
+    function saveOnlineExams(exams) { localStorage.setItem("onlineExams", JSON.stringify(exams)); }
+
+    // ======================== اسلایدر ========================
+    let swiperInstance = null;
+    function renderSlider() {
+        let slides = getSlides(); let wrapper = document.getElementById("sliderWrapper"); if (!wrapper) return;
+        wrapper.innerHTML = "";
+        slides.forEach(s => {
+            let div = document.createElement("div"); div.className = "swiper-slide";
+            if (s.type === "image") {
+                let img = document.createElement("img");
+                img.src = s.content;
+                img.alt = "تبلیغ";
+                img.onclick = (e) => { e.stopPropagation(); openLightbox(s.content); };
+                div.appendChild(img);
+            } else {
+                div.innerHTML = `<div class="slide-text"><i class="fas fa-star-of-life"></i> ${escapeHtml(s.content)}</div>`;
+            }
+            wrapper.appendChild(div);
+        });
+        if (swiperInstance) swiperInstance.destroy(true, true);
+        swiperInstance = new Swiper('.mySwiper', { loop: true, autoplay: { delay: 3000 }, pagination: { el: '.swiper-pagination', clickable: true } });
+    }
+    function renderAdminSlides() {
+        let slides = getSlides(); let container = document.getElementById("slidesList"); if (!container) return;
+        if (slides.length === 0) { container.innerHTML = "<p>هیچ تبلیغی نیست</p>"; return; }
+        let html = "";
+        slides.forEach((s, idx) => {
+            let preview = s.type === "image" ? `<img src="${s.content}" style="max-width:50px; max-height:50px; border-radius:12px;">` : `📝 ${escapeHtml(s.content.substring(0, 30))}`;
+            html += `<div class="flex-row" style="justify-content:space-between; border-radius:28px; padding:8px; margin-bottom:8px;"><span>${preview}</span><button class="delSlideBtn" data-index="${idx}" style="background:#b91c1c;">حذف</button></div>`;
+        });
+        container.innerHTML = html;
+        document.querySelectorAll(".delSlideBtn").forEach(btn => {
+            btn.onclick = () => {
+                let idx = parseInt(btn.dataset.index);
+                let newSlides = getSlides();
+                newSlides.splice(idx, 1);
+                saveSlides(newSlides);
+                renderAdminSlides();
+                renderSlider();
+                showToast("اسلاید حذف شد");
+            };
+        });
+    }
+    function addImageSlide() {
+        let fileInput = document.getElementById("slideImageInput");
+        let file = fileInput.files[0];
+        if (!file) { showToast("لطفاً یک عکس انتخاب کنید"); return; }
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            let base64 = e.target.result;
+            let slides = getSlides();
+            slides.push({ type: "image", content: base64 });
+            saveSlides(slides);
+            fileInput.value = "";
             renderAdminSlides();
             renderSlider();
-            showToast("اسلاید حذف شد");
+            showToast("اسلاید تصویری اضافه شد");
         };
-    });
-}
-function addImageSlide() {
-    let fileInput = document.getElementById("slideImageInput");
-    let file = fileInput.files[0];
-    if (!file) { showToast("لطفاً یک عکس انتخاب کنید"); return; }
-    let reader = new FileReader();
-    reader.onload = function(e) {
-        let base64 = e.target.result;
+        reader.readAsDataURL(file);
+    }
+    function addTextSlide() {
+        let text = document.getElementById("slideTextAlt").value.trim();
+        if (!text) { showToast("متن تبلیغ را وارد کنید"); return; }
         let slides = getSlides();
-        slides.push({ type: "image", content: base64 });
+        slides.push({ type: "text", content: text });
         saveSlides(slides);
-        fileInput.value = "";
+        document.getElementById("slideTextAlt").value = "";
         renderAdminSlides();
         renderSlider();
-        showToast("اسلاید تصویری اضافه شد");
+        showToast("اسلاید متنی اضافه شد");
+    }
+
+    // ======================== احراز هویت ========================
+    let regTempCode = null, regTempData = null, resetCodeStore = null, resetMobileStore = null;
+    function showTab(tab) {
+        document.getElementById("loginForm").style.display = (tab === 'login') ? 'block' : 'none';
+        document.getElementById("registerForm").style.display = (tab === 'register') ? 'block' : 'none';
+        document.getElementById("forgotForm").style.display = (tab === 'forgot') ? 'block' : 'none';
+        document.querySelectorAll("#loginPage .tab-btn").forEach(btn => btn.classList.remove("active"));
+        if (tab === 'login') document.getElementById("loginTabBtn").classList.add("active");
+        else if (tab === 'register') document.getElementById("registerTabBtn").classList.add("active");
+        else document.getElementById("forgotTabBtn").classList.add("active");
+    }
+    document.getElementById("loginTabBtn").onclick = () => showTab('login');
+    document.getElementById("registerTabBtn").onclick = () => showTab('register');
+    document.getElementById("forgotTabBtn").onclick = () => showTab('forgot');
+    document.getElementById("sendRegCodeBtn").onclick = () => {
+        let fullName = document.getElementById("regFullName").value.trim();
+        let username = document.getElementById("regUsername").value.trim();
+        let mobile = document.getElementById("regMobile").value.trim();
+        let pwd = document.getElementById("regPassword").value;
+        let confirm = document.getElementById("regConfirmPassword").value;
+        if (!fullName || !username || !mobile || !pwd) { showToast("همه فیلدها را پر کنید"); return; }
+        if (pwd !== confirm) { showToast("رمز و تکرار مطابقت ندارند"); return; }
+        if (!/^09\d{9}$/.test(mobile)) { showToast("شماره نامعتبر"); return; }
+        let users = getUsers();
+        if (users.find(u => u.username === username)) { showToast("نام کاربری تکراری"); return; }
+        if (users.find(u => u.mobile === mobile)) { showToast("شماره قبلاً ثبت شده"); return; }
+        let code = Math.floor(100000 + Math.random() * 900000).toString();
+        regTempCode = code;
+        regTempData = { fullName, username, mobile, password: pwd };
+        document.getElementById("regCodeSection").style.display = "block";
+        document.getElementById("registerError").innerHTML = `<span style="color:green;">📱 کد: ${code}</span>`;
+        showToast("کد ارسال شد");
     };
-    reader.readAsDataURL(file);
-}
-function addTextSlide() {
-    let text = document.getElementById("slideTextAlt").value.trim();
-    if (!text) { showToast("متن تبلیغ را وارد کنید"); return; }
-    let slides = getSlides();
-    slides.push({ type: "text", content: text });
-    saveSlides(slides);
-    document.getElementById("slideTextAlt").value = "";
-    renderAdminSlides();
-    renderSlider();
-    showToast("اسلاید متنی اضافه شد");
-}
-
-// ======================== احراز هویت ========================
-let regTempCode = null, regTempData = null, resetCodeStore = null, resetMobileStore = null;
-function showTab(tab) {
-    document.getElementById("loginForm").style.display = (tab === 'login') ? 'block' : 'none';
-    document.getElementById("registerForm").style.display = (tab === 'register') ? 'block' : 'none';
-    document.getElementById("forgotForm").style.display = (tab === 'forgot') ? 'block' : 'none';
-    document.querySelectorAll("#loginPage .tab-btn").forEach(btn => btn.classList.remove("active"));
-    if (tab === 'login') document.getElementById("loginTabBtn").classList.add("active");
-    else if (tab === 'register') document.getElementById("registerTabBtn").classList.add("active");
-    else document.getElementById("forgotTabBtn").classList.add("active");
-}
-document.getElementById("loginTabBtn").onclick = () => showTab('login');
-document.getElementById("registerTabBtn").onclick = () => showTab('register');
-document.getElementById("forgotTabBtn").onclick = () => showTab('forgot');
-document.getElementById("sendRegCodeBtn").onclick = () => {
-    let fullName = document.getElementById("regFullName").value.trim();
-    let username = document.getElementById("regUsername").value.trim();
-    let mobile = document.getElementById("regMobile").value.trim();
-    let pwd = document.getElementById("regPassword").value;
-    let confirm = document.getElementById("regConfirmPassword").value;
-    if (!fullName || !username || !mobile || !pwd) { showToast("همه فیلدها را پر کنید"); return; }
-    if (pwd !== confirm) { showToast("رمز و تکرار مطابقت ندارند"); return; }
-    if (!/^09\d{9}$/.test(mobile)) { showToast("شماره نامعتبر"); return; }
-    let users = getUsers();
-    if (users.find(u => u.username === username)) { showToast("نام کاربری تکراری"); return; }
-    if (users.find(u => u.mobile === mobile)) { showToast("شماره قبلاً ثبت شده"); return; }
-    let code = Math.floor(100000 + Math.random() * 900000).toString();
-    regTempCode = code;
-    regTempData = { fullName, username, mobile, password: pwd };
-    document.getElementById("regCodeSection").style.display = "block";
-    document.getElementById("registerError").innerHTML = `<span style="color:green;">📱 کد: ${code}</span>`;
-    showToast("کد ارسال شد");
-};
-document.getElementById("completeRegisterBtn").onclick = () => {
-    let entered = document.getElementById("regVerifyCode").value.trim();
-    if (!regTempCode || entered !== regTempCode) { showToast("کد نامعتبر"); return; }
-    let users = getUsers();
-    users.push({ id: Date.now(), ...regTempData });
-    saveUsers(users);
-    showToast("ثبت‌نام موفق. اکنون وارد شوید.");
-    document.getElementById("regCodeSection").style.display = "none";
-    document.getElementById("registerForm").reset();
-    regTempData = null;
-    showTab('login');
-};
-document.getElementById("doLoginBtn").onclick = () => {
-    let loginId = document.getElementById("loginUsername").value.trim();
-    let pwd = document.getElementById("loginPassword").value;
-    let user = getUsers().find(u => (u.username === loginId || u.mobile === loginId) && u.password === pwd);
-    if (user) {
-        localStorage.setItem("currentNormalUser", JSON.stringify({ username: user.username, fullName: user.fullName, mobile: user.mobile }));
-        renderUserHome();
-        setPage("userHomePage");
-        showToast(`خوش آمدید ${user.fullName}`);
-    } else {
-        document.getElementById("loginError").innerText = "نام کاربری یا رمز اشتباه است";
-    }
-};
-document.getElementById("sendResetCodeBtn").onclick = () => {
-    let mobile = document.getElementById("forgotMobile").value.trim();
-    let user = getUsers().find(u => u.mobile === mobile);
-    if (!user) { showToast("شماره ثبت نشده"); return; }
-    let code = Math.floor(100000 + Math.random() * 900000).toString();
-    resetCodeStore = code;
-    resetMobileStore = mobile;
-    document.getElementById("resetCodeSection").style.display = "block";
-    document.getElementById("forgotError").innerHTML = `<span style="color:green;">کد: ${code}</span>`;
-    showToast("کد ارسال شد");
-};
-document.getElementById("resetPasswordBtn").onclick = () => {
-    let entered = document.getElementById("resetCodeInput").value.trim();
-    let newPwd = document.getElementById("newPassword").value;
-    let confirm = document.getElementById("confirmNewPassword").value;
-    if (!resetCodeStore || entered !== resetCodeStore) { showToast("کد نامعتبر"); return; }
-    if (!newPwd || newPwd !== confirm) { showToast("رمز جدید مطابقت ندارد"); return; }
-    let users = getUsers();
-    let idx = users.findIndex(u => u.mobile === resetMobileStore);
-    if (idx !== -1) {
-        users[idx].password = newPwd;
+    document.getElementById("completeRegisterBtn").onclick = () => {
+        let entered = document.getElementById("regVerifyCode").value.trim();
+        if (!regTempCode || entered !== regTempCode) { showToast("کد نامعتبر"); return; }
+        let users = getUsers();
+        users.push({ id: Date.now(), ...regTempData });
         saveUsers(users);
-        showToast("رمز با موفقیت تغییر کرد");
-        document.getElementById("resetCodeSection").style.display = "none";
+        showToast("ثبت‌نام موفق. اکنون وارد شوید.");
+        document.getElementById("regCodeSection").style.display = "none";
+        document.getElementById("registerForm").reset();
+        regTempData = null;
         showTab('login');
-    } else {
-        showToast("خطا");
-    }
-};
-function logout() {
-    localStorage.removeItem("currentNormalUser");
-    setPage("loginPage");
-    showTab('login');
-}
-document.getElementById("logoutBtn").onclick = logout;
-document.getElementById("copyUserTextBtn").onclick = () => {
-    let txt = document.getElementById("copyableTextUser").innerText;
-    navigator.clipboard.writeText(txt).then(() => showToast("کپی شد"));
-};
-document.getElementById("backToUserHome").onclick = () => setPage("userHomePage");
-document.getElementById("backToCategories").onclick = () => setPage("userHomePage");
-document.getElementById("backToChapterSelect").onclick = () => { setPage("chapterSelectPage"); renderChapterSelect(currentCategoryId, currentCategoryTitle); };
-document.getElementById("backFromExamPortal").onclick = () => setPage("userHomePage");
-document.getElementById("bigExamBtn").onclick = () => openOnlineExamPortal();
-
-// ======================== نمایش دسته‌ها و PDFها با سلام ========================
-let currentCategoryId = null, currentCategoryTitle = null, currentChapterId = null, currentChapterCatId = null;
-function renderUserHome() {
-    let user = JSON.parse(localStorage.getItem("currentNormalUser"));
-    if (!user) return;
-    // نمایش "سلام" به همراه نام کاربر - مشکل رفع شده
-    document.getElementById("welcomeUser").innerHTML = `سلام ${escapeHtml(user.fullName)} 👋`;
-    let cats = getCategories();
-    cats.sort((a, b) => a.order - b.order);
-    let container = document.getElementById("userCategoriesGrid");
-    container.innerHTML = "";
-    cats.forEach((cat, idx) => {
-        let count = 0;
-        if (cat.hasChapters) {
-            for (let i = 1; i <= 9; i++) count += getPdfs().filter(p => p.categoryId === cat.id && p.chapter === i).length;
+    };
+    document.getElementById("doLoginBtn").onclick = () => {
+        let loginId = document.getElementById("loginUsername").value.trim();
+        let pwd = document.getElementById("loginPassword").value;
+        let user = getUsers().find(u => (u.username === loginId || u.mobile === loginId) && u.password === pwd);
+        if (user) {
+            localStorage.setItem("currentNormalUser", JSON.stringify({ username: user.username, fullName: user.fullName, mobile: user.mobile }));
+            renderUserHome();
+            setPage("userHomePage");
+            showToast(`خوش آمدید ${user.fullName}`);
         } else {
-            count = getPdfs().filter(p => p.categoryId === cat.id && !p.chapter).length;
+            document.getElementById("loginError").innerText = "نام کاربری یا رمز اشتباه است";
         }
-        let div = document.createElement("div");
-        div.className = "cat-card";
-        div.innerHTML = `<div class="cat-icon">${getCatIcon(idx)}</div><div class="cat-title">${escapeHtml(cat.title)}</div><div class="pdf-count">${count} فایل</div>`;
-        div.onclick = () => {
-            if (cat.hasChapters) {
-                currentCategoryId = cat.id;
-                currentCategoryTitle = cat.title;
-                renderChapterSelect(cat.id, cat.title);
-                setPage("chapterSelectPage");
-            } else {
-                openCategory(cat.id, cat.title);
-            }
-        };
-        container.appendChild(div);
-    });
-    document.getElementById("userFooterNote").innerHTML = localStorage.getItem("footerText") || "";
-    document.getElementById("copyableTextUser").innerHTML = localStorage.getItem("copyText") || "";
-    renderSlider();
-    updateMainTitles();
-}
-function renderChapterSelect(catId, catTitle) {
-    let container = document.getElementById("chapterGrid");
-    container.innerHTML = "";
-    for (let i = 1; i <= 9; i++) {
-        let count = getPdfs().filter(p => p.categoryId === catId && p.chapter === i).length;
-        let div = document.createElement("div");
-        div.className = "chapter-card";
-        div.innerHTML = `<div>فصل ${i}</div><div class="pdf-count">${count} PDF</div>`;
-        div.onclick = () => openChapterPdfs(catId, i);
-        container.appendChild(div);
+    };
+    document.getElementById("sendResetCodeBtn").onclick = () => {
+        let mobile = document.getElementById("forgotMobile").value.trim();
+        let user = getUsers().find(u => u.mobile === mobile);
+        if (!user) { showToast("شماره ثبت نشده"); return; }
+        let code = Math.floor(100000 + Math.random() * 900000).toString();
+        resetCodeStore = code;
+        resetMobileStore = mobile;
+        document.getElementById("resetCodeSection").style.display = "block";
+        document.getElementById("forgotError").innerHTML = `<span style="color:green;">کد: ${code}</span>`;
+        showToast("کد ارسال شد");
+    };
+    document.getElementById("resetPasswordBtn").onclick = () => {
+        let entered = document.getElementById("resetCodeInput").value.trim();
+        let newPwd = document.getElementById("newPassword").value;
+        let confirm = document.getElementById("confirmNewPassword").value;
+        if (!resetCodeStore || entered !== resetCodeStore) { showToast("کد نامعتبر"); return; }
+        if (!newPwd || newPwd !== confirm) { showToast("رمز جدید مطابقت ندارد"); return; }
+        let users = getUsers();
+        let idx = users.findIndex(u => u.mobile === resetMobileStore);
+        if (idx !== -1) {
+            users[idx].password = newPwd;
+            saveUsers(users);
+            showToast("رمز با موفقیت تغییر کرد");
+            document.getElementById("resetCodeSection").style.display = "none";
+            showTab('login');
+        } else {
+            showToast("خطا");
+        }
+    };
+    function logout() {
+        localStorage.removeItem("currentNormalUser");
+        setPage("loginPage");
+        showTab('login');
     }
-}
-function openChapterPdfs(catId, chapter) {
-    currentChapterId = chapter;
-    currentChapterCatId = catId;
-    document.getElementById("chapterTitle").innerHTML = `فصل ${chapter}`;
-    let pdfs = getPdfs().filter(p => p.categoryId === catId && p.chapter === chapter);
-    let container = document.getElementById("chapterPdfsList");
-    if (pdfs.length === 0) {
-        container.innerHTML = "<p>هیچ فایلی برای این فصل وجود ندارد.</p>";
-        setPage("chapterPdfsPage");
-        return;
-    }
-    let html = "";
-    pdfs.forEach(p => {
-        html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div><button class="viewChapterPdf" data-id="${p.id}">👁️ باز</button><button class="downloadChapterPdf" data-id="${p.id}">⬇️ دانلود</button></div></div>`;
-    });
-    container.innerHTML = html;
-    document.querySelectorAll(".viewChapterPdf").forEach(btn => btn.onclick = () => viewPdf(parseInt(btn.dataset.id)));
-    document.querySelectorAll(".downloadChapterPdf").forEach(btn => btn.onclick = () => downloadPdf(parseInt(btn.dataset.id)));
-    setPage("chapterPdfsPage");
-}
-function viewPdf(id) {
-    let p = getPdfs().find(p => p.id === id);
-    if (p && p.data) {
-        let bin = atob(p.data);
-        let arr = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-        let blob = new Blob([arr], { type: "application/pdf" });
-        window.open(URL.createObjectURL(blob), "_blank");
-    } else showToast("خطا");
-}
-function downloadPdf(id) {
-    let p = getPdfs().find(p => p.id === id);
-    if (p && p.data) {
-        let bin = atob(p.data);
-        let arr = new Uint8Array(bin.length);
-        for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
-        let blob = new Blob([arr], { type: "application/pdf" });
-        let a = document.createElement("a");
-        a.href = URL.createObjectURL(blob);
-        a.download = p.name;
-        a.click();
-        showToast("دانلود شروع شد");
-    } else showToast("خطا");
-}
-function openCategory(catId, title) {
-    currentCategoryId = catId;
-    currentCategoryTitle = title;
-    document.getElementById("userCatTitle").innerHTML = title;
-    let pdfs = getPdfs().filter(p => p.categoryId === catId && !p.chapter);
-    let container = document.getElementById("userPdfsList");
-    if (pdfs.length === 0) {
-        container.innerHTML = "<p>هیچ فایلی نیست.</p>";
-        setPage("userCategoryPage");
-        return;
-    }
-    let html = "";
-    pdfs.forEach(p => {
-        html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div><button class="viewPdf" data-id="${p.id}">👁️ باز</button><button class="downloadPdf" data-id="${p.id}">⬇️ دانلود</button></div></div>`;
-    });
-    container.innerHTML = html;
-    document.querySelectorAll(".viewPdf").forEach(btn => btn.onclick = () => viewPdf(parseInt(btn.dataset.id)));
-    document.querySelectorAll(".downloadPdf").forEach(btn => btn.onclick = () => downloadPdf(parseInt(btn.dataset.id)));
-    setPage("userCategoryPage");
-}
+    document.getElementById("logoutBtn").onclick = logout;
+    document.getElementById("copyUserTextBtn").onclick = () => {
+        let txt = document.getElementById("copyableTextUser").innerText;
+        navigator.clipboard.writeText(txt).then(() => showToast("کپی شد"));
+    };
+    document.getElementById("backToUserHome").onclick = () => setPage("userHomePage");
+    document.getElementById("backToCategories").onclick = () => setPage("userHomePage");
+    document.getElementById("backToChapterSelect").onclick = () => { setPage("chapterSelectPage"); renderChapterSelect(currentCategoryId, currentCategoryTitle); };
+    document.getElementById("backFromExamPortal").onclick = () => setPage("userHomePage");
+    document.getElementById("bigExamBtn").onclick = () => openOnlineExamPortal();
 
-// ======================== مدیریت ادمین ========================
-let adminAuthenticated = false;
-function loadAdminPanel() {
-    if (!adminAuthenticated) return;
-    renderManageCategories();
-    refreshAdminSelects();
-    renderAdminPdfList();
-    renderAdminSlides();
-    document.getElementById("footerTextAdmin").value = localStorage.getItem("footerText") || "";
-    document.getElementById("copyTextAdmin").value = localStorage.getItem("copyText") || "";
-    document.getElementById("appTitleInput").value = getAppTitle();
-    renderUsersList();
-}
-function renderManageCategories() {
-    let cats = getCategories(); cats.sort((a, b) => a.order - b.order); let html = "";
-    cats.forEach(cat => { html += `<div class="flex-row" style="margin-bottom:12px;"><input type="text" id="catName_${cat.id}" value="${escapeHtml(cat.title)}" style="flex:2;"><button class="saveCat" data-id="${cat.id}">ذخیره</button><button class="upCat" data-id="${cat.id}">⬆️</button><button class="downCat" data-id="${cat.id}">⬇️</button><button class="delCat" data-id="${cat.id}" style="background:#b91c1c;">حذف</button></div>`; });
-    document.getElementById("catsManage").innerHTML = html;
-    document.querySelectorAll(".saveCat").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); let newName = document.getElementById(`catName_${id}`).value.trim(); if (newName) { let cats = getCategories(); let c = cats.find(c => c.id === id); if (c) c.title = newName; saveCategories(cats); renderManageCategories(); renderUserHome(); refreshAdminSelects(); } });
-    document.querySelectorAll(".upCat").forEach(btn => btn.onclick = () => moveCat(parseInt(btn.dataset.id), -1));
-    document.querySelectorAll(".downCat").forEach(btn => btn.onclick = () => moveCat(parseInt(btn.dataset.id), 1));
-    document.querySelectorAll(".delCat").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); if (getPdfs().some(p => p.categoryId === id)) { showToast("ابتدا PDFهای دسته را حذف کنید"); return; } let cats = getCategories().filter(c => c.id !== id); saveCategories(cats); renderManageCategories(); renderUserHome(); refreshAdminSelects(); });
-}
-function moveCat(id, dir) { let cats = getCategories(); cats.sort((a, b) => a.order - b.order); let idx = cats.findIndex(c => c.id === id); if (dir === -1 && idx === 0) return; if (dir === 1 && idx === cats.length - 1) return; let temp = cats[idx].order; cats[idx].order = cats[idx + dir].order; cats[idx + dir].order = temp; saveCategories(cats); renderManageCategories(); renderUserHome(); refreshAdminSelects(); }
-function addCategoryAdmin() { let name = document.getElementById("newCatName").value.trim(); if (!name) return; let cats = getCategories(); let maxOrder = cats.length ? Math.max(...cats.map(c => c.order)) : -1; cats.push({ id: Date.now(), title: name, order: maxOrder + 1, hasChapters: false }); saveCategories(cats); document.getElementById("newCatName").value = ""; renderManageCategories(); renderUserHome(); refreshAdminSelects(); }
-function refreshAdminSelects() {
-    let cats = getCategories(); let selUp = document.getElementById("adminCatSelect"); let selDel = document.getElementById("adminCatDelete"); if (selUp) selUp.innerHTML = ""; if (selDel) selDel.innerHTML = ""; cats.forEach(cat => { selUp.appendChild(new Option(cat.title, cat.id)); selDel.appendChild(new Option(cat.title, cat.id)); });
-    let chapterDivUp = document.getElementById("chapterSelectForAdmin"); let chapterDivDel = document.getElementById("chapterSelectForDelete"); let selChapterUp = document.getElementById("adminChapterSelect"); let selChapterDel = document.getElementById("adminChapterDelete"); let selectedCatId = parseInt(selUp.value); let selectedCat = cats.find(c => c.id === selectedCatId); if (selectedCat && selectedCat.hasChapters) { chapterDivUp.style.display = "block"; selChapterUp.innerHTML = "<option value=''>-- انتخاب فصل --</option>"; for (let i = 1; i <= 9; i++) selChapterUp.appendChild(new Option(`فصل ${i}`, i)); } else { chapterDivUp.style.display = "none"; selChapterUp.innerHTML = ""; }
-    let selectedDelCat = parseInt(selDel.value); let selectedDel = cats.find(c => c.id === selectedDelCat); if (selectedDel && selectedDel.hasChapters) { chapterDivDel.style.display = "block"; selChapterDel.innerHTML = "<option value=''>-- انتخاب فصل --</option>"; for (let i = 1; i <= 9; i++) selChapterDel.appendChild(new Option(`فصل ${i}`, i)); selChapterDel.onchange = () => renderAdminPdfList(); } else { chapterDivDel.style.display = "none"; selChapterDel.innerHTML = ""; renderAdminPdfList(); }
-    selUp.onchange = () => refreshAdminSelects(); selDel.onchange = () => refreshAdminSelects();
-}
-function renderAdminPdfList() {
-    let catId = parseInt(document.getElementById("adminCatDelete").value); if (isNaN(catId)) return;
-    let chapter = null; let cat = getCategories().find(c => c.id === catId);
-    if (cat && cat.hasChapters) { let selChap = document.getElementById("adminChapterDelete"); if (selChap) chapter = parseInt(selChap.value); if (!chapter) { document.getElementById("adminPdfList").innerHTML = "<p>لطفاً فصل را انتخاب کنید</p>"; return; } }
-    let pdfs = getPdfs().filter(p => p.categoryId === catId && ((chapter !== null) ? (p.chapter === chapter) : (!p.chapter)));
-    let container = document.getElementById("adminPdfList"); if (pdfs.length === 0) { container.innerHTML = "<p>بدون فایل</p>"; return; }
-    let html = ""; pdfs.forEach(p => { html += `<div class="flex-row" style="justify-content:space-between; background:rgba(0,0,0,0.2); margin:6px 0; padding:6px 12px; border-radius:28px;"><span>${escapeHtml(p.name)}</span><button class="delPdfAdmin" data-id="${p.id}" style="background:#b91c1c;">حذف</button></div>`; });
-    container.innerHTML = html; document.querySelectorAll(".delPdfAdmin").forEach(btn => { btn.onclick = () => { let id = parseInt(btn.dataset.id); let newPdfs = getPdfs().filter(p => p.id !== id); savePdfs(newPdfs); renderAdminPdfList(); renderUserHome(); showToast("حذف شد"); }; });
-}
-function uploadPdfAdmin() {
-    let file = document.getElementById("pdfFileInput").files[0]; if (!file) { showToast("فایل را انتخاب کنید"); return; } if (file.type !== "application/pdf") { showToast("فایل PDF نیست"); return; }
-    let catId = parseInt(document.getElementById("adminCatSelect").value);
-    let chapter = null; let cat = getCategories().find(c => c.id === catId);
-    if (cat && cat.hasChapters) { let selChap = document.getElementById("adminChapterSelect"); if (selChap) chapter = parseInt(selChap.value); if (!chapter) { showToast("لطفاً فصل را انتخاب کنید"); return; } }
-    let customName = document.getElementById("pdfNameInput").value.trim(); let finalName = customName || file.name;
-    let reader = new FileReader(); reader.onload = function(e) { let base64 = e.target.result.split(",")[1]; let pdfs = getPdfs(); pdfs.push({ id: Date.now(), categoryId: catId, name: finalName, data: base64, chapter: chapter }); savePdfs(pdfs); showToast("PDF آپلود شد"); document.getElementById("pdfFileInput").value = ""; document.getElementById("pdfNameInput").value = ""; renderUserHome(); refreshAdminSelects(); }; reader.readAsDataURL(file);
-}
-function saveAdminSettings() {
-    let newTitle = document.getElementById("appTitleInput").value.trim();
-    if (newTitle) setAppTitle(newTitle);
-    localStorage.setItem("footerText", document.getElementById("footerTextAdmin").value);
-    localStorage.setItem("copyText", document.getElementById("copyTextAdmin").value);
-    renderUserHome();
-    updateMainTitles();
-    showToast("تنظیمات ذخیره شد");
-}
-function renderUsersList() {
-    let users = getUsers();
-    let container = document.getElementById("usersList");
-    if (users.length === 0) { container.innerHTML = "<p>کاربری ثبت نام نکرده</p>"; return; }
-    let html = "<ul>";
-    users.forEach(u => { html += `<li>${escapeHtml(u.fullName)} (${u.username}) - ${u.mobile}</li>`; });
-    html += "</ul>";
-    container.innerHTML = html;
-}    // ======================== آزمون آنلاین ========================
+    // ======================== نمایش دسته‌ها و PDFها با «سلام» ========================
+    let currentCategoryId = null, currentCategoryTitle = null, currentChapterId = null, currentChapterCatId = null;
+    function renderUserHome() {
+        let user = JSON.parse(localStorage.getItem("currentNormalUser"));
+        if (!user) return;
+        // ** نمایش نام کاربر به همراه سلام **
+        document.getElementById("welcomeUser").innerHTML = `سلام ${escapeHtml(user.fullName)} 👋`;
+        let cats = getCategories();
+        cats.sort((a, b) => a.order - b.order);
+        let container = document.getElementById("userCategoriesGrid");
+        container.innerHTML = "";
+        cats.forEach((cat, idx) => {
+            let count = 0;
+            if (cat.hasChapters) {
+                for (let i = 1; i <= 9; i++) count += getPdfs().filter(p => p.categoryId === cat.id && p.chapter === i).length;
+            } else {
+                count = getPdfs().filter(p => p.categoryId === cat.id && !p.chapter).length;
+            }
+            let div = document.createElement("div");
+            div.className = "cat-card";
+            div.innerHTML = `<div class="cat-icon">${getCatIcon(idx)}</div><div class="cat-title">${escapeHtml(cat.title)}</div><div class="pdf-count">${count} فایل</div>`;
+            div.onclick = () => {
+                if (cat.hasChapters) {
+                    currentCategoryId = cat.id;
+                    currentCategoryTitle = cat.title;
+                    renderChapterSelect(cat.id, cat.title);
+                    setPage("chapterSelectPage");
+                } else {
+                    openCategory(cat.id, cat.title);
+                }
+            };
+            container.appendChild(div);
+        });
+        document.getElementById("userFooterNote").innerHTML = localStorage.getItem("footerText") || "";
+        document.getElementById("copyableTextUser").innerHTML = localStorage.getItem("copyText") || "";
+        renderSlider();
+        updateMainTitles();
+    }
+    function renderChapterSelect(catId, catTitle) {
+        let container = document.getElementById("chapterGrid");
+        container.innerHTML = "";
+        for (let i = 1; i <= 9; i++) {
+            let count = getPdfs().filter(p => p.categoryId === catId && p.chapter === i).length;
+            let div = document.createElement("div");
+            div.className = "chapter-card";
+            div.innerHTML = `<div>فصل ${i}</div><div class="pdf-count">${count} PDF</div>`;
+            div.onclick = () => openChapterPdfs(catId, i);
+            container.appendChild(div);
+        }
+    }
+    function openChapterPdfs(catId, chapter) {
+        currentChapterId = chapter;
+        currentChapterCatId = catId;
+        document.getElementById("chapterTitle").innerHTML = `فصل ${chapter}`;
+        let pdfs = getPdfs().filter(p => p.categoryId === catId && p.chapter === chapter);
+        let container = document.getElementById("chapterPdfsList");
+        if (pdfs.length === 0) {
+            container.innerHTML = "<p>هیچ فایلی برای این فصل وجود ندارد.</p>";
+            setPage("chapterPdfsPage");
+            return;
+        }
+        let html = "";
+        pdfs.forEach(p => {
+            html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div><button class="viewChapterPdf" data-id="${p.id}">👁️ باز</button><button class="downloadChapterPdf" data-id="${p.id}">⬇️ دانلود</button></div></div>`;
+        });
+        container.innerHTML = html;
+        document.querySelectorAll(".viewChapterPdf").forEach(btn => btn.onclick = () => viewPdf(parseInt(btn.dataset.id)));
+        document.querySelectorAll(".downloadChapterPdf").forEach(btn => btn.onclick = () => downloadPdf(parseInt(btn.dataset.id)));
+        setPage("chapterPdfsPage");
+    }
+    function viewPdf(id) {
+        let p = getPdfs().find(p => p.id === id);
+        if (p && p.data) {
+            let bin = atob(p.data);
+            let arr = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+            let blob = new Blob([arr], { type: "application/pdf" });
+            window.open(URL.createObjectURL(blob), "_blank");
+        } else showToast("خطا");
+    }
+    function downloadPdf(id) {
+        let p = getPdfs().find(p => p.id === id);
+        if (p && p.data) {
+            let bin = atob(p.data);
+            let arr = new Uint8Array(bin.length);
+            for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+            let blob = new Blob([arr], { type: "application/pdf" });
+            let a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = p.name;
+            a.click();
+            showToast("دانلود شروع شد");
+        } else showToast("خطا");
+    }
+    function openCategory(catId, title) {
+        currentCategoryId = catId;
+        currentCategoryTitle = title;
+        document.getElementById("userCatTitle").innerHTML = title;
+        let pdfs = getPdfs().filter(p => p.categoryId === catId && !p.chapter);
+        let container = document.getElementById("userPdfsList");
+        if (pdfs.length === 0) {
+            container.innerHTML = "<p>هیچ فایلی نیست.</p>";
+            setPage("userCategoryPage");
+            return;
+        }
+        let html = "";
+        pdfs.forEach(p => {
+            html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div><button class="viewPdf" data-id="${p.id}">👁️ باز</button><button class="downloadPdf" data-id="${p.id}">⬇️ دانلود</button></div></div>`;
+        });
+        container.innerHTML = html;
+        document.querySelectorAll(".viewPdf").forEach(btn => btn.onclick = () => viewPdf(parseInt(btn.dataset.id)));
+        document.querySelectorAll(".downloadPdf").forEach(btn => btn.onclick = () => downloadPdf(parseInt(btn.dataset.id)));
+        setPage("userCategoryPage");
+    }
+
+    // ======================== مدیریت ادمین ========================
+    let adminAuthenticated = false;
+    function loadAdminPanel() {
+        if (!adminAuthenticated) return;
+        renderManageCategories();
+        refreshAdminSelects();
+        renderAdminPdfList();
+        renderAdminSlides();
+        document.getElementById("footerTextAdmin").value = localStorage.getItem("footerText") || "";
+        document.getElementById("copyTextAdmin").value = localStorage.getItem("copyText") || "";
+        document.getElementById("appTitleInput").value = getAppTitle();
+        renderUsersList();
+    }
+    function renderManageCategories() {
+        let cats = getCategories(); cats.sort((a, b) => a.order - b.order); let html = "";
+        cats.forEach(cat => { html += `<div class="flex-row" style="margin-bottom:12px;"><input type="text" id="catName_${cat.id}" value="${escapeHtml(cat.title)}" style="flex:2;"><button class="saveCat" data-id="${cat.id}">ذخیره</button><button class="upCat" data-id="${cat.id}">⬆️</button><button class="downCat" data-id="${cat.id}">⬇️</button><button class="delCat" data-id="${cat.id}" style="background:#b91c1c;">حذف</button></div>`; });
+        document.getElementById("catsManage").innerHTML = html;
+        document.querySelectorAll(".saveCat").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); let newName = document.getElementById(`catName_${id}`).value.trim(); if (newName) { let cats = getCategories(); let c = cats.find(c => c.id === id); if (c) c.title = newName; saveCategories(cats); renderManageCategories(); renderUserHome(); refreshAdminSelects(); } });
+        document.querySelectorAll(".upCat").forEach(btn => btn.onclick = () => moveCat(parseInt(btn.dataset.id), -1));
+        document.querySelectorAll(".downCat").forEach(btn => btn.onclick = () => moveCat(parseInt(btn.dataset.id), 1));
+        document.querySelectorAll(".delCat").forEach(btn => btn.onclick = () => { let id = parseInt(btn.dataset.id); if (getPdfs().some(p => p.categoryId === id)) { showToast("ابتدا PDFهای دسته را حذف کنید"); return; } let cats = getCategories().filter(c => c.id !== id); saveCategories(cats); renderManageCategories(); renderUserHome(); refreshAdminSelects(); });
+    }
+    function moveCat(id, dir) { let cats = getCategories(); cats.sort((a, b) => a.order - b.order); let idx = cats.findIndex(c => c.id === id); if (dir === -1 && idx === 0) return; if (dir === 1 && idx === cats.length - 1) return; let temp = cats[idx].order; cats[idx].order = cats[idx + dir].order; cats[idx + dir].order = temp; saveCategories(cats); renderManageCategories(); renderUserHome(); refreshAdminSelects(); }
+    function addCategoryAdmin() { let name = document.getElementById("newCatName").value.trim(); if (!name) return; let cats = getCategories(); let maxOrder = cats.length ? Math.max(...cats.map(c => c.order)) : -1; cats.push({ id: Date.now(), title: name, order: maxOrder + 1, hasChapters: false }); saveCategories(cats); document.getElementById("newCatName").value = ""; renderManageCategories(); renderUserHome(); refreshAdminSelects(); }
+    function refreshAdminSelects() {
+        let cats = getCategories(); let selUp = document.getElementById("adminCatSelect"); let selDel = document.getElementById("adminCatDelete"); if (selUp) selUp.innerHTML = ""; if (selDel) selDel.innerHTML = ""; cats.forEach(cat => { selUp.appendChild(new Option(cat.title, cat.id)); selDel.appendChild(new Option(cat.title, cat.id)); });
+        let chapterDivUp = document.getElementById("chapterSelectForAdmin"); let chapterDivDel = document.getElementById("chapterSelectForDelete"); let selChapterUp = document.getElementById("adminChapterSelect"); let selChapterDel = document.getElementById("adminChapterDelete"); let selectedCatId = parseInt(selUp.value); let selectedCat = cats.find(c => c.id === selectedCatId); if (selectedCat && selectedCat.hasChapters) { chapterDivUp.style.display = "block"; selChapterUp.innerHTML = "<option value=''>-- انتخاب فصل --</option>"; for (let i = 1; i <= 9; i++) selChapterUp.appendChild(new Option(`فصل ${i}`, i)); } else { chapterDivUp.style.display = "none"; selChapterUp.innerHTML = ""; }
+        let selectedDelCat = parseInt(selDel.value); let selectedDel = cats.find(c => c.id === selectedDelCat); if (selectedDel && selectedDel.hasChapters) { chapterDivDel.style.display = "block"; selChapterDel.innerHTML = "<option value=''>-- انتخاب فصل --</option>"; for (let i = 1; i <= 9; i++) selChapterDel.appendChild(new Option(`فصل ${i}`, i)); selChapterDel.onchange = () => renderAdminPdfList(); } else { chapterDivDel.style.display = "none"; selChapterDel.innerHTML = ""; renderAdminPdfList(); }
+        selUp.onchange = () => refreshAdminSelects(); selDel.onchange = () => refreshAdminSelects();
+    }
+    function renderAdminPdfList() {
+        let catId = parseInt(document.getElementById("adminCatDelete").value); if (isNaN(catId)) return;
+        let chapter = null; let cat = getCategories().find(c => c.id === catId);
+        if (cat && cat.hasChapters) { let selChap = document.getElementById("adminChapterDelete"); if (selChap) chapter = parseInt(selChap.value); if (!chapter) { document.getElementById("adminPdfList").innerHTML = "<p>لطفاً فصل را انتخاب کنید</p>"; return; } }
+        let pdfs = getPdfs().filter(p => p.categoryId === catId && ((chapter !== null) ? (p.chapter === chapter) : (!p.chapter)));
+        let container = document.getElementById("adminPdfList"); if (pdfs.length === 0) { container.innerHTML = "<p>بدون فایل</p>"; return; }
+        let html = ""; pdfs.forEach(p => { html += `<div class="flex-row" style="justify-content:space-between; background:rgba(0,0,0,0.2); margin:6px 0; padding:6px 12px; border-radius:28px;"><span>${escapeHtml(p.name)}</span><button class="delPdfAdmin" data-id="${p.id}" style="background:#b91c1c;">حذف</button></div>`; });
+        container.innerHTML = html; document.querySelectorAll(".delPdfAdmin").forEach(btn => { btn.onclick = () => { let id = parseInt(btn.dataset.id); let newPdfs = getPdfs().filter(p => p.id !== id); savePdfs(newPdfs); renderAdminPdfList(); renderUserHome(); showToast("حذف شد"); }; });
+    }
+    function uploadPdfAdmin() {
+        let file = document.getElementById("pdfFileInput").files[0]; if (!file) { showToast("فایل را انتخاب کنید"); return; } if (file.type !== "application/pdf") { showToast("فایل PDF نیست"); return; }
+        let catId = parseInt(document.getElementById("adminCatSelect").value);
+        let chapter = null; let cat = getCategories().find(c => c.id === catId);
+        if (cat && cat.hasChapters) { let selChap = document.getElementById("adminChapterSelect"); if (selChap) chapter = parseInt(selChap.value); if (!chapter) { showToast("لطفاً فصل را انتخاب کنید"); return; } }
+        let customName = document.getElementById("pdfNameInput").value.trim(); let finalName = customName || file.name;
+        let reader = new FileReader(); reader.onload = function(e) { let base64 = e.target.result.split(",")[1]; let pdfs = getPdfs(); pdfs.push({ id: Date.now(), categoryId: catId, name: finalName, data: base64, chapter: chapter }); savePdfs(pdfs); showToast("PDF آپلود شد"); document.getElementById("pdfFileInput").value = ""; document.getElementById("pdfNameInput").value = ""; renderUserHome(); refreshAdminSelects(); }; reader.readAsDataURL(file);
+    }
+    function saveAdminSettings() {
+        let newTitle = document.getElementById("appTitleInput").value.trim();
+        if (newTitle) setAppTitle(newTitle);
+        localStorage.setItem("footerText", document.getElementById("footerTextAdmin").value);
+        localStorage.setItem("copyText", document.getElementById("copyTextAdmin").value);
+        renderUserHome();
+        updateMainTitles();
+        showToast("تنظیمات ذخیره شد");
+    }
+    function renderUsersList() {
+        let users = getUsers();
+        let container = document.getElementById("usersList");
+        if (users.length === 0) { container.innerHTML = "<p>کاربری ثبت نام نکرده</p>"; return; }
+        let html = "<ul>";
+        users.forEach(u => { html += `<li>${escapeHtml(u.fullName)} (${u.username}) - ${u.mobile}</li>`; });
+        html += "</ul>";
+        container.innerHTML = html;
+    }
+
+    // ======================== آزمون آنلاین ========================
     let currentExamEditing = null, currentStudentExam = null, studentAnswers = [], examTimerInterval = null, timeLeft = 0, currentQIndex = 0;
     function renderExamQuestionForms() {
         let container = document.getElementById("examQuestionsList"); if (!container) return;
