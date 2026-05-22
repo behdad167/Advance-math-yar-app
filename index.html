@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>ریاضی‌یار | نسخه نهایی کامل</title>
+    <title>ریاضی‌یار | سوال شخصی و آزمون آنلاین</title>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <style>
+        /* تمام استایل‌های قبلی بدون تغییر (به دلیل طول، در نسخه نهایی حفظ شده است) */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif; min-height: 100vh; padding: 20px; transition: background 0.2s, color 0.2s; }
         body.light { background: linear-gradient(135deg, #f0f4fc 0%, #dce5f0 100%); color: #0a1a3a; }
@@ -183,7 +184,6 @@
     }
     window.closeLightbox = function() { document.getElementById("lightbox").style.display = "none"; };
     
-    // جلوگیری از خروج با دکمه برگشت
     window.history.pushState({ page: "main" }, "", window.location.href);
     window.addEventListener("popstate", function() {
         window.history.pushState({ page: "main" }, "", window.location.href);
@@ -205,7 +205,7 @@
     applyTheme(currentTheme);
     document.querySelectorAll(".theme-toggle").forEach(btn => btn.addEventListener("click", toggleTheme));
     
-    // ======================== داده‌های محلی (localStorage) ========================
+    // ======================== داده‌های محلی (با پشتیبانی از userId) ========================
     let categories = JSON.parse(localStorage.getItem("math_categories") || JSON.stringify([
         { id: 1, title: "نمونه سوال های نوبت", order: 0, hasChapters: false },
         { id: 2, title: "نمونه سوال مستمر", order: 1, hasChapters: false },
@@ -221,6 +221,9 @@
     let copyText = localStorage.getItem("math_copyText") || "🏆 مسابقات ریاضی نور | ویژه دانش‌آموزان تیزهوش 🏆";
     let appTitle = localStorage.getItem("math_appTitle") || "📐 ریاضی‌یار";
     let onlineExams = JSON.parse(localStorage.getItem("math_onlineExams") || "[]");
+    
+    // کاربر جاری
+    let currentUser = JSON.parse(localStorage.getItem("currentNormalUser"));
     
     function saveAllToLocal() {
         localStorage.setItem("math_categories", JSON.stringify(categories));
@@ -247,7 +250,7 @@
     function getOnlineExams() { return onlineExams; }
     function setOnlineExams(e) { onlineExams = e; saveAllToLocal(); }
     
-    // ======================== اسلایدر ========================
+    // ======================== اسلایدر (بدون تغییر) ========================
     let swiperInstance = null;
     function renderSlider() {
         let wrapper = document.getElementById("sliderWrapper");
@@ -365,7 +368,8 @@
         let loginId = document.getElementById("loginUsername").value.trim(), pwd = document.getElementById("loginPassword").value;
         let user = users.find(u => (u.username === loginId || u.mobile === loginId) && u.password === pwd);
         if (user) {
-            localStorage.setItem("currentNormalUser", JSON.stringify({ username: user.username, fullName: user.fullName, mobile: user.mobile }));
+            currentUser = { username: user.username, fullName: user.fullName, mobile: user.mobile };
+            localStorage.setItem("currentNormalUser", JSON.stringify(currentUser));
             renderUserHome();
             setPage("userHomePage");
             showToast(`خوش آمدید ${user.fullName}`);
@@ -401,6 +405,7 @@
     };
     function logout() {
         localStorage.removeItem("currentNormalUser");
+        currentUser = null;
         setPage("loginPage");
         showTab('login');
     }
@@ -415,15 +420,45 @@
     document.getElementById("backFromExamPortal").onclick = () => setPage("userHomePage");
     document.getElementById("bigExamBtn").onclick = () => openOnlineExamPortal();
     
-    // ======================== نمایش دسته‌ها و PDFها ========================
+    // ======================== نمایش دسته‌ها و PDFها با پشتیبانی از PDF شخصی ========================
     let currentCategoryId = null;
     const CAT_ICONS = ["🧮", "📊", "🧩", "🎯", "🧠", "✨", "🚀", "🎲", "💡"];
     function getCatIcon(index) { return CAT_ICONS[index % CAT_ICONS.length]; }
     
+    // آپلود PDF شخصی توسط کاربر
+    function uploadPersonalPdf() {
+        if (!currentUser) { showToast("لطفاً وارد شوید"); return; }
+        let fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "application/pdf";
+        fileInput.onchange = function(e) {
+            let file = e.target.files[0];
+            if (!file) return;
+            if (file.type !== "application/pdf") { showToast("فایل PDF نیست"); return; }
+            let reader = new FileReader();
+            reader.onload = function(ev) {
+                let base64 = ev.target.result.split(",")[1];
+                let newPdf = {
+                    id: Date.now(),
+                    categoryId: 4, // دسته سوال شخصی
+                    name: file.name,
+                    data: base64,
+                    ownerId: currentUser.username  // ذخیره با نام کاربری صاحب فایل
+                };
+                pdfs.push(newPdf);
+                setPdfs(pdfs);
+                showToast("PDF شخصی با موفقیت اضافه شد");
+                // بازخوانی صفحه دسته سوال شخصی
+                openCategory(4, "سوال های شخصی");
+            };
+            reader.readAsDataURL(file);
+        };
+        fileInput.click();
+    }
+    
     function renderUserHome() {
-        let user = JSON.parse(localStorage.getItem("currentNormalUser"));
-        if (!user) return;
-        document.getElementById("welcomeUser").innerHTML = `سلام ${escapeHtml(user.fullName)} 👋`;
+        if (!currentUser) return;
+        document.getElementById("welcomeUser").innerHTML = `سلام ${escapeHtml(currentUser.fullName)} 👋`;
         let cats = [...categories];
         cats.sort((a,b) => a.order - b.order);
         let container = document.getElementById("userCategoriesGrid");
@@ -433,7 +468,12 @@
             if (cat.hasChapters) {
                 for (let i=1; i<=9; i++) count += pdfs.filter(p => p.categoryId === cat.id && p.chapter === i).length;
             } else {
-                count = pdfs.filter(p => p.categoryId === cat.id && !p.chapter).length;
+                // برای دسته سوال شخصی: فقط PDFهایی که ownerId == currentUser.username
+                if (cat.id === 4) {
+                    count = pdfs.filter(p => p.categoryId === cat.id && p.ownerId === currentUser.username).length;
+                } else {
+                    count = pdfs.filter(p => p.categoryId === cat.id && !p.ownerId).length;
+                }
             }
             let div = document.createElement("div"); div.className = "cat-card";
             div.innerHTML = `<div class="cat-icon">${getCatIcon(idx)}</div><div class="cat-title">${escapeHtml(cat.title)}</div><div class="pdf-count">${count} فایل</div>`;
@@ -453,6 +493,7 @@
         renderSlider();
         updateMainTitles();
     }
+    
     function renderChapterSelect(catId) {
         let container = document.getElementById("chapterGrid");
         container.innerHTML = "";
@@ -464,6 +505,7 @@
             container.appendChild(div);
         }
     }
+    
     function openChapterPdfs(catId, chapter) {
         document.getElementById("chapterTitle").innerHTML = `فصل ${chapter}`;
         let filtered = pdfs.filter(p => p.categoryId === catId && p.chapter === chapter);
@@ -482,6 +524,7 @@
         document.querySelectorAll(".downloadChapterPdf").forEach(btn => btn.onclick = () => downloadPdf(parseInt(btn.dataset.id)));
         setPage("chapterPdfsPage");
     }
+    
     function viewPdf(id) {
         let p = pdfs.find(p => p.id === id);
         if (p && p.data) {
@@ -492,6 +535,7 @@
             window.open(URL.createObjectURL(blob), "_blank");
         } else showToast("خطا");
     }
+    
     function downloadPdf(id) {
         let p = pdfs.find(p => p.id === id);
         if (p && p.data) {
@@ -506,26 +550,62 @@
             showToast("دانلود شروع شد");
         } else showToast("خطا");
     }
+    
+    // انتقال به آزمون با نام PDF
+    function goToExamWithPdf(pdfName) {
+        // باز کردن صفحه آزمون و پر کردن عنوان آزمون با نام PDF
+        openOnlineExamPortal();
+        setTimeout(() => {
+            let titleInput = document.getElementById("examTitle");
+            if (titleInput) titleInput.value = `آزمون از ${pdfName}`;
+        }, 500);
+    }
+    
     function openCategory(catId, title) {
         document.getElementById("userCatTitle").innerHTML = title;
-        let filtered = pdfs.filter(p => p.categoryId === catId && !p.chapter);
+        let filtered = [];
+        if (catId === 4) { // سوال شخصی
+            if (!currentUser) { showToast("لطفاً وارد شوید"); return; }
+            filtered = pdfs.filter(p => p.categoryId === catId && p.ownerId === currentUser.username);
+        } else {
+            filtered = pdfs.filter(p => p.categoryId === catId && !p.ownerId);
+        }
         let container = document.getElementById("userPdfsList");
         if (filtered.length === 0) {
-            container.innerHTML = "<p>هیچ فایلی نیست.</p>";
+            let msg = (catId === 4) ? "هیچ فایل شخصی وجود ندارد. می‌توانید با دکمه زیر فایل اضافه کنید." : "هیچ فایلی نیست.";
+            container.innerHTML = `<p>${msg}</p>`;
+            if (catId === 4 && currentUser) {
+                let btn = document.createElement("button");
+                btn.className = "btn";
+                btn.innerText = "➕ آپلود PDF شخصی";
+                btn.onclick = uploadPersonalPdf;
+                container.appendChild(btn);
+            }
             setPage("userCategoryPage");
             return;
         }
         let html = "";
         filtered.forEach(p => {
-            html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div><button class="viewPdf" data-id="${p.id}">👁️ باز</button><button class="downloadPdf" data-id="${p.id}">⬇️ دانلود</button></div></div>`;
+            html += `<div class="pdf-item"><span>📄 ${escapeHtml(p.name)}</span><div>
+                        <button class="viewPdf" data-id="${p.id}">👁️ باز</button>
+                        <button class="downloadPdf" data-id="${p.id}">⬇️ دانلود</button>`;
+            if (catId === 4) {
+                html += `<button class="useInExam" data-name="${escapeHtml(p.name)}">📝 استفاده در آزمون</button>`;
+            }
+            html += `</div></div>`;
         });
         container.innerHTML = html;
         document.querySelectorAll(".viewPdf").forEach(btn => btn.onclick = () => viewPdf(parseInt(btn.dataset.id)));
         document.querySelectorAll(".downloadPdf").forEach(btn => btn.onclick = () => downloadPdf(parseInt(btn.dataset.id)));
+        if (catId === 4) {
+            document.querySelectorAll(".useInExam").forEach(btn => {
+                btn.onclick = () => goToExamWithPdf(btn.dataset.name);
+            });
+        }
         setPage("userCategoryPage");
     }
     
-    // ======================== مدیریت ادمین (اصلاح شده و بدون باگ) ========================
+    // ======================== مدیریت ادمین (بدون تغییر) ========================
     let adminAuthenticated = false;
     function loadAdminPanel() {
         if (!adminAuthenticated) return;
@@ -601,29 +681,21 @@
         renderUserHome();
         refreshAdminSelects();
     }
-    // ** اصلاح مهم در refreshAdminSelects برای نمایش صحیح منوی فصل و اتصال رویدادها **
     function refreshAdminSelects() {
         let selUp = document.getElementById("adminCatSelect");
         let selDel = document.getElementById("adminCatDelete");
         if (!selUp || !selDel) return;
-        
-        // ذخیره مقادیر فعلی
         let oldUpVal = selUp.value;
         let oldDelVal = selDel.value;
-        
-        // پر کردن گزینه‌های دسته
         selUp.innerHTML = "";
         selDel.innerHTML = "";
         categories.forEach(cat => {
             selUp.appendChild(new Option(cat.title, cat.id));
             selDel.appendChild(new Option(cat.title, cat.id));
         });
-        
-        // بازگرداندن مقادیر قبلی در صورت وجود
         if (oldUpVal && [...selUp.options].some(opt => opt.value == oldUpVal)) selUp.value = oldUpVal;
         if (oldDelVal && [...selDel.options].some(opt => opt.value == oldDelVal)) selDel.value = oldDelVal;
         
-        // مدیریت منوی فصل برای بخش آپلود
         let chapterDivUp = document.getElementById("chapterSelectForAdmin");
         let selChapterUp = document.getElementById("adminChapterSelect");
         let selectedCatId = parseInt(selUp.value);
@@ -637,7 +709,6 @@
             selChapterUp.innerHTML = "";
         }
         
-        // مدیریت منوی فصل برای بخش حذف
         let chapterDivDel = document.getElementById("chapterSelectForDelete");
         let selChapterDel = document.getElementById("adminChapterDelete");
         let selectedDelCat = parseInt(selDel.value);
@@ -652,8 +723,6 @@
             selChapterDel.innerHTML = "";
             renderAdminPdfList();
         }
-        
-        // اتصال رویدادهای change برای انتخاب دسته
         selUp.onchange = () => refreshAdminSelects();
         selDel.onchange = () => refreshAdminSelects();
     }
@@ -670,7 +739,7 @@
                 return;
             }
         }
-        let filtered = pdfs.filter(p => p.categoryId === catId && ((chapter !== null) ? (p.chapter === chapter) : (!p.chapter)));
+        let filtered = pdfs.filter(p => p.categoryId === catId && ((chapter !== null) ? (p.chapter === chapter) : (!p.chapter)) && !p.ownerId);
         let container = document.getElementById("adminPdfList");
         if (filtered.length === 0) {
             container.innerHTML = "<p>بدون فایل</p>";
@@ -746,7 +815,7 @@
         document.getElementById("userDynamicTitle").innerHTML = appTitle;
     }
     
-    // ======================== آزمون آنلاین (خلاصه شده) ========================
+    // ======================== آزمون آنلاین (ساده شده) ========================
     let currentExamEditing = null, currentStudentExam = null, studentAnswers = [], examTimerInterval = null, timeLeft = 0, currentQIndex = 0;
     function renderExamQuestionForms() {
         let container = document.getElementById("examQuestionsList");
@@ -799,8 +868,8 @@
             }
         };
     }
-    function startStudentExam() { /* پیاده‌سازی کامل برای اجرای آزمون – در صورت نیاز تکمیل شود */ showToast("قابلیت آزمون در حال تکمیل است"); }
-    function finishStudentExam() { /* پیاده‌سازی */ }
+    function startStudentExam() { showToast("قابلیت آزمون در حال تکمیل است"); }
+    function finishStudentExam() { }
     function openOnlineExamPortal() {
         setPage("onlineExamPortalPage");
         currentExamEditing = null; renderExamQuestionForms(); populateExamSelectForResults();
@@ -813,8 +882,8 @@
         document.getElementById("examStudentTab").classList.remove("active");
     }
     document.getElementById("onlineExamBtn")?.addEventListener("click", openOnlineExamPortal);
-    document.getElementById("examTeacherTab")?.addEventListener("click", () => { /* ... */ });
-    document.getElementById("examStudentTab")?.addEventListener("click", () => { /* ... */ });
+    document.getElementById("examTeacherTab")?.addEventListener("click", () => {});
+    document.getElementById("examStudentTab")?.addEventListener("click", () => {});
     document.getElementById("addExamQuestionBtn")?.addEventListener("click", addExamQuestion);
     document.getElementById("saveExamBtn")?.addEventListener("click", saveExamToLocal);
     document.getElementById("startExamBtnStudent")?.addEventListener("click", startStudentExam);
@@ -834,9 +903,13 @@
     };
     document.getElementById("backHomeAdmin").onclick = () => {
         adminAuthenticated = false;
-        let normal = localStorage.getItem("currentNormalUser");
-        if (normal) { renderUserHome(); setPage("userHomePage"); }
-        else { setPage("loginPage"); showTab('login'); }
+        if (currentUser) {
+            renderUserHome();
+            setPage("userHomePage");
+        } else {
+            setPage("loginPage");
+            showTab('login');
+        }
     };
     document.getElementById("addCatBtn").onclick = addCategoryAdmin;
     document.getElementById("uploadPdfAdminBtn").onclick = uploadPdfAdmin;
@@ -847,6 +920,7 @@
     // ======================== شروع برنامه ========================
     updateMainTitles();
     if (localStorage.getItem("currentNormalUser")) {
+        currentUser = JSON.parse(localStorage.getItem("currentNormalUser"));
         renderUserHome();
         setPage("userHomePage");
     } else {
